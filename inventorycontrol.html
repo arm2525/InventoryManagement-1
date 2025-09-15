@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TapGrid — Login to Play (Google Sheets Auth)</title>
+  <style>
+    :root{ --bg:#0b1020; --panel:#121a33; --muted:#7f8bb3; --text:#e7ecff; --accent:#8ab4ff; --good:#7CFF9E; --bad:#FF8A8A }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;background:linear-gradient(180deg,#0b1020,#0f1630);color:var(--text);} a{color:var(--accent);text-decoration:none}
+    header{position:sticky;top:0;background:rgba(10,16,32,.8);backdrop-filter: blur(8px);border-bottom:1px solid #1d274f}
+    .nav{max-width:980px;margin:auto;display:flex;align-items:center;gap:16px;padding:14px 16px}
+    .brand{font-weight:700;letter-spacing:.3px}
+    .grow{flex:1}
+    .tag{font:700 12px/1.1 ui-monospace,Menlo,Consolas,monospace;background:#1a244a;padding:4px 8px;border-radius:999px;color:#bcd0ff}
+    .btn{appearance:none;border:none;background:#1f2a55;color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:.15s transform, .15s background}
+    .btn:hover{background:#243062;transform:translateY(-1px)}
+    .btn.ghost{background:transparent;border:1px solid #273364}
+    .container{max-width:980px;margin:24px auto;padding:0 16px}
+    .card{background:var(--panel);border:1px solid #1b2549;border-radius:18px;padding:20px 18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .grid{display:grid;gap:16px}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .field{display:grid;gap:8px}
+    label{font-size:12px;color:var(--muted)}
+    input{background:#0f1733;border:1px solid #1e2a57;border-radius:12px;padding:12px 14px;color:var(--text);outline:none}
+    input:focus{border-color:#3c57c6;box-shadow:0 0 0 3px rgba(90,119,255,.2)}
+    .hint{color:var(--muted);font-size:12px}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tab{padding:8px 12px;border-radius:999px;background:#101939;border:1px solid #1f2a55;color:#bcd0ff}
+    .hidden{display:none}
+    .hud{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .hud .pill{background:#101939;border:1px solid #243062;border-radius:999px;padding:8px 12px;font:600 13px ui-monospace,Menlo,Consolas,monospace}
+    .hud .good{border-color:#2a6f4e;color:#b9ffd0}
+    .board{--size:3;display:grid;grid-template-columns:repeat(var(--size), 1fr);gap:10px;margin-top:18px}
+    .cell{aspect-ratio:1/1;border-radius:16px;background:#0e1733;border:1px solid #1f2a57;display:grid;place-items:center;font-weight:800;font-size:20px;color:#91a6ff;cursor:pointer;user-select:none;transition:.12s transform,.12s background,.12s border-color}
+    .cell:hover{transform:translateY(-2px)}
+    .cell.active{background:#283a86;border-color:#3f65ff;box-shadow:0 6px 14px rgba(63,101,255,.35)}
+    .cell.hit{background:#184b34;border-color:#2c9a6f;color:#d8ffe9}
+    .footer{color:#8aa0ff;font-size:12px;text-align:center;margin:18px 0}
+    .warn{color:#ffb5b5}.ok{color:#c1ffd6}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <div class="brand">🎮 TapGrid</div>
+      <span id="authState" class="tag">Signed out</span>
+      <div class="grow"></div>
+      <button id="signOutBtn" class="btn ghost hidden">Sign out</button>
+      <a class="btn" href="#/game" id="playBtn">Play</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Auth Views -->
+    <section id="authView" class="card">
+      <div class="tabs">
+        <a href="#/login" class="tab" id="tabLogin">Login</a>
+        <a href="#/register" class="tab" id="tabRegister">Register</a>
+      </div>
+      <div class="grid two">
+        <form id="loginForm" class="grid" autocomplete="on">
+          <h2>Login</h2>
+          <div class="field"><label>Email</label><input id="loginEmail" type="email" required placeholder="you@example.com" /></div>
+          <div class="field"><label>Password</label><input id="loginPass" type="password" minlength="6" required placeholder="••••••••" /></div>
+          <button class="btn" type="submit">Login</button>
+          <div class="hint">No account? <a href="#/register">Register</a></div>
+          <div id="loginMsg" class="hint"></div>
+        </form>
+
+        <form id="registerForm" class="grid hidden" autocomplete="on">
+          <h2>Create your account</h2>
+          <div class="field"><label>Display name</label><input id="regName" type="text" required placeholder="Arm" /></div>
+          <div class="field"><label>Email</label><input id="regEmail" type="email" required placeholder="you@example.com" /></div>
+          <div class="field"><label>Password</label><input id="regPass" type="password" minlength="6" required placeholder="Minimum 6 characters" /></div>
+          <button class="btn" type="submit">Create account</button>
+          <div class="hint">Already registered? <a href="#/login">Login</a></div>
+          <div id="registerMsg" class="hint"></div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Game View -->
+    <section id="gameView" class="card hidden">
+      <div class="hud">
+        <div class="pill">👤 <span id="playerName">-</span></div>
+        <div class="pill">⏱️ <span id="timeLeft">30</span>s</div>
+        <div class="pill good">⭐ Score: <span id="score">0</span></div>
+        <div class="pill">🏆 Best: <span id="bestScore">0</span></div>
+        <button id="startBtn" class="btn">Start</button>
+      </div>
+
+      <div id="board" class="board" aria-label="TapGrid board"></div>
+
+      <div id="gameMsg" class="hint"></div>
+      <div class="footer">Auth backed by <span class="ok">Google Apps Script + Google Sheet</span>. Passwords are <b>salted & peppered</b> and hashed server-side. <span class="warn">Do not store plaintext.</span></div>
+    </section>
+
+    <section class="hint" style="text-align:center;margin-top:10px">
+      Tip: In the backend Apps Script, set Script Properties <code>PEPPER</code> and <code>TOKEN_SECRET</code> (the code will auto-generate if missing).
+    </section>
+  </main>
+
+  <script>
+    // === CONFIG ===
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYvEJ5kmR_I-9vqDY-x2lLt0_yxqhDVav6jHovxxa6Bm8STaFQhWL5J8uM-ysGZE9_/exec'; 
+
+    // === SPA Router helpers ===
+    const $ = (s)=>document.querySelector(s);
+    const show = (el, on=true)=> el.classList.toggle('hidden', !on);
+    const setText = (sel,v)=>($(sel).textContent=v);
+
+    const authView=$('#authView'), gameView=$('#gameView');
+    const loginForm=$('#loginForm'), registerForm=$('#registerForm');
+
+    function renderRoute(){
+      const hash=location.hash||'#/login';
+      const isLogin=hash==='#/login', isRegister=hash==='#/register', isGame=hash==='#/game';
+      show(authView, isLogin||isRegister); show(gameView, isGame);
+      show(registerForm, isRegister); show(loginForm, isLogin);
+      $('#tabLogin').classList.toggle('tag', isLogin); $('#tabRegister').classList.toggle('tag', isRegister);
+    }
+    window.addEventListener('hashchange', renderRoute);
+
+    // === Simple session handling ===
+    const session = {
+      token: localStorage.getItem('tg_token'),
+      email: localStorage.getItem('tg_email'),
+      name: localStorage.getItem('tg_name'),
+    }
+
+    async function api(action, data={}){
+      const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action, ...data}) });
+      if(!res.ok){ throw new Error('Network error'); }
+      return res.json();
+    }
+
+    async function refreshMe(){
+      if(!session.token) return signOutUI();
+      try{
+        const r = await api('me', { token: session.token });
+        if(!r.ok) return signOutUI();
+        session.email = r.email; session.name = r.name; localStorage.setItem('tg_email', r.email); localStorage.setItem('tg_name', r.name);
+        $('#authState').textContent = `Signed in as ${session.name||session.email}`;
+        show($('#signOutBtn'), true);
+        $('#playerName').textContent = session.name||session.email;
+        setText('#bestScore', r.bestScore||0);
+        if(location.hash !== '#/game') location.hash = '#/game';
+      } catch(err){ signOutUI(); }
+    }
+
+    function signOutUI(){
+      session.token = null; session.email=null; session.name=null;
+      localStorage.removeItem('tg_token'); localStorage.removeItem('tg_email'); localStorage.removeItem('tg_name');
+      $('#authState').textContent='Signed out'; show($('#signOutBtn'), false);
+      if(location.hash==='#/game') location.hash = '#/login';
+      renderRoute();
+    }
+
+    // === Auth forms ===
+    loginForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const email=$('#loginEmail').value.trim(); const password=$('#loginPass').value;
+      try{
+        const r = await api('login', { email, password });
+        if(!r.ok) throw new Error(r.error||'Login failed');
+        session.token=r.token; session.email=email; session.name=r.name;
+        localStorage.setItem('tg_token', r.token); localStorage.setItem('tg_email', email); localStorage.setItem('tg_name', r.name||'');
+        $('#loginMsg').textContent='';
+        await refreshMe();
+      }catch(err){ $('#loginMsg').textContent = `⚠️ ${err.message}`; }
+    });
+
+    registerForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const name=$('#regName').value.trim(); const email=$('#regEmail').value.trim(); const password=$('#regPass').value;
+      try{
+        const r = await api('register', { name, email, password });
+        if(!r.ok) throw new Error(r.error||'Registration failed');
+        $('#registerMsg').textContent='✅ Account created. Please login.';
+        location.hash = '#/login';
+      }catch(err){ $('#registerMsg').textContent = `⚠️ ${err.message}`; }
+    });
+
+    $('#signOutBtn').addEventListener('click', signOutUI);
+    $('#playBtn').addEventListener('click', renderRoute);
+
+    // === Game ===
+    const board=$('#board'), scoreEl=$('#score'), bestEl=$('#bestScore'), timeEl=$('#timeLeft'), startBtn=$('#startBtn'), msg=$('#gameMsg');
+    const SIZE=3; let active=-1,running=false,timer=null,cycle=null,timeLeft=30,score=0;
+
+    function buildBoard(){ board.innerHTML=''; for(let i=0;i<SIZE*SIZE;i++){ const d=document.createElement('button'); d.className='cell'; d.dataset.idx=i; d.addEventListener('click',onCellClick); board.appendChild(d);} }
+    function randomCell(ex){ let i; do{i=Math.floor(Math.random()*SIZE*SIZE);} while(i===ex); return i; }
+    function highlight(i){ document.querySelectorAll('.cell').forEach(c=>c.classList.remove('active','hit')); const cell=document.querySelector(`.cell[data-idx="${i}"]`); if(cell) cell.classList.add('active'); active=i; }
+    function onCellClick(e){ if(!running) return; const i=Number(e.currentTarget.dataset.idx); if(i===active){ score++; scoreEl.textContent=score; e.currentTarget.classList.add('hit'); highlight(randomCell(active)); } }
+    async function startGame(){ if(running) return; if(!session.token){ msg.textContent='Login required.'; location.hash='#/login'; return; }
+      running=true; score=0; timeLeft=30; scoreEl.textContent='0'; timeEl.textContent='30'; msg.textContent='Ready!';
+      buildBoard(); highlight(randomCell(-1)); cycle=setInterval(()=>highlight(randomCell(active)),800);
+      timer=setInterval(async()=>{ timeLeft--; timeEl.textContent=String(timeLeft); if(timeLeft<=0){ await endGame(); } },1000);
+    }
+    async function endGame(){ running=false; clearInterval(timer); clearInterval(cycle); document.querySelectorAll('.cell').forEach(c=>c.classList.remove('active'));
+      msg.innerHTML=`⏹️ Time! Final score: <b>${score}</b>`;
+      try{
+        const r = await api('saveScore',{ token: session.token, score });
+        if(r.ok){ bestEl.textContent=r.best; if(score>=r.best) msg.innerHTML += ' · <span class="ok">New personal best!</span>'; }
+      }catch(_){ /* ignore */ }
+    }
+    startBtn.addEventListener('click', ()=> running?null:startGame());
+
+    // init
+    buildBoard(); renderRoute(); refreshMe();
+  </script>
+
+  SECURITY NOTES:
+  • Never store plaintext passwords. This example uses salted + peppered iterative HMAC. For production, prefer a proper KDF like bcrypt/Argon2 (can be ported to Apps Script with a JS implementation such as bcryptjs).
+  • Lock the Sheet (File → Protect sheet) so casual viewers can’t see hashes. Share only with your service account (you).
+  • Rate limit and captcha on register/login if exposed publicly.
+  • GitHub Pages stays static; all secrets remain server-side in Apps Script.
+  -->
+</body>
+</html>
