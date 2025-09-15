@@ -102,7 +102,7 @@
 
   <script>
     // === CONFIG ===
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHDSTc4nNlDCG3QmquGvupi-8cI3CJUflcUwpBk35T7uYjisMK6gN3xtKILYnV2UamkA/exec'; 
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHDSTc4nNlDCG3QmquGvupi-8cI3CJUflcUwpBk35T7uYjisMK6gN3xtKILYnV2UamkA/exec'; // e.g., https://script.google.com/macros/s/AKfycbx.../exec
 
     // === SPA Router helpers ===
     const $ = (s)=>document.querySelector(s);
@@ -129,7 +129,7 @@
     }
 
     async function api(action, data={}){
-      const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action, ...data}) });
+      const res = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action, ...data}) });
       if(!res.ok){ throw new Error('Network error'); }
       return res.json();
     }
@@ -210,12 +210,5 @@
     buildBoard(); renderRoute(); refreshMe();
   </script>
 
-  SECURITY NOTES:
-  • Never store plaintext passwords. This example uses salted + peppered iterative HMAC. For production, prefer a proper KDF like bcrypt/Argon2 (can be ported to Apps Script with a JS implementation such as bcryptjs).
-  • Lock the Sheet (File → Protect sheet) so casual viewers can’t see hashes. Share only with your service account (you).
-  • Rate limit and captcha on register/login if exposed publicly.
-  • GitHub Pages stays static; all secrets remain server-side in Apps Script.
-  -->
 </body>
 </html>
-
