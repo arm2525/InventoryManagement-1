@@ -99,22 +99,22 @@
             <h3>1.1 Notation</h3>
             <p>We define the following parameters:</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
-                <div class="bg-gray-50 p-4 rounded-lg border"><strong>D</strong> = Annual demand (units/year)</div>
-                <div class="bg-gray-50 p-4 rounded-lg border"><strong>K</strong> = Fixed ordering cost per order ($/order)</div>
-                <div class="bg-gray-50 p-4 rounded-lg border"><strong>h</strong> = Annual holding cost per unit ($/unit/year)</div>
-                <div class="bg-gray-50 p-4 rounded-lg border"><strong>c</strong> = Unit purchase cost ($/unit)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$$D$$</strong> = Annual demand (units/year)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$$K$$</strong> = Fixed ordering cost per order ($/order)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$$h$$</strong> = Annual holding cost per unit ($/unit/year)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$$c$$</strong> = Unit purchase cost ($/unit)</div>
             </div>
 
             <h3>1.2 Calculus-Based Derivation</h3>
-            <p>We build a function for the Total Annual Relevant Cost, $TRC(Q)$, and find the $Q$ that minimizes it.</p>
+            <p>We build a function for the Total Annual Relevant Cost, $$TRC(Q)$$, and find the $$Q$$ that minimizes it.</p>
             
             <h4>Step 1: Define Total Annual Ordering Cost</h4>
-            <p>Number of orders per year = $D/Q$.</p>
-            <p>Total Annual Ordering Cost = (Number of orders) $\times$ (Cost per order) = $\frac{D}{Q} K$</p>
+            <p>Number of orders per year = $$D/Q$$.</p>
+            <p>Total Annual Ordering Cost = (Number of orders)$$\times$$ $$(Cost per order) = $$\frac{D}{Q} K$$</p>
 
             <h4>Step 2: Define Total Annual Holding Cost</h4>
-            <p>The inventory level follows a sawtooth pattern from $Q$ to 0. The average inventory level is $\frac{Q}{2}$.</p>
-            <p>Total Annual Holding Cost = (Average inventory) $\times$ (Holding cost per unit/year) = $\frac{Q}{2} h$</p>
+            <p>The inventory level follows a sawtooth pattern from $Q$ to 0. The average inventory level is $$\frac{Q}{2}$$.</p>
+            <p>Total Annual Holding Cost = (Average inventory) $$\times$$ (Holding cost per unit/year) = $$\frac{Q}{2} h$$</p>
 
             <h4>Step 3: Define Total Annual Relevant Cost (TRC)</h4>
             <p>The total annual purchase cost ($D \times c$) is constant (assuming no discounts) and can be ignored for optimization. The $TRC$ is:</p>
@@ -138,7 +138,7 @@
             <blockquote>
                 <p>$$\frac{d^2}{dQ^2}TRC(Q) = \frac{d}{dQ} \left( -DK Q^{-2} + \frac{h}{2} \right) = \frac{2DK}{Q^3}$$</p>
             </blockquote>
-            <p>Since $D$, $K$, and $Q$ are all positive, $\frac{2DK}{Q^3} > 0$. The cost function is convex, and $Q^*$ is the unique global minimum.</p>
+            <p>Since $$D$$, $$K$$, and $$Q$$ are all positive, $$\frac{2DK}{Q^3} > 0$$. The cost function is convex, and $$Q^*$$ is the unique global minimum.</p>
         </section>
 
         <section>
@@ -159,15 +159,15 @@
 
             <h3>2.2 Mathematical Proof of Robustness</h3>
             <p>
-                The EOQ model's most powerful feature is its robustness to parameter errors. The total cost curve is "flat" around the optimum $Q^*$.
-                Let's define a cost penalty ratio $\frac{TRC(Q')}{TRC(Q^*)}$ where $Q'$ is a non-optimal quantity ($Q' = \beta Q^*$).
+                The EOQ model's most powerful feature is its robustness to parameter errors. The total cost curve is "flat" around the optimum $$Q^*$$.
+                Let's define a cost penalty ratio $$\frac{TRC(Q')}{TRC(Q^*)}$$ where $Q'$ is a non-optimal quantity ($$Q' = \beta Q^*$$).
             </p>
             <blockquote>
                 <p>$$TRC(Q') = \frac{DK}{Q'} + \frac{Q'h}{2} = \frac{DK}{\beta Q^*} + \frac{\beta Q^* h}{2}$$</p>
             </blockquote>
             <p>
-                At the optimum $Q^*$, we know the ordering and holding costs are equal: $\frac{DK}{Q^*} = \frac{Q^*h}{2} = \frac{TRC(Q^*)}{2}$.
-                Substitute these into the $TRC(Q')$ equation:
+                At the optimum $$Q^*$$, we know the ordering and holding costs are equal: $$\frac{DK}{Q^*} = \frac{Q^*h}{2} = \frac{TRC(Q^*)}{2}$$.
+                Substitute these into the $$TRC(Q')$$ equation:
             </p>
             <blockquote>
                 <p>$$TRC(Q') = \frac{1}{\beta} \left( \frac{DK}{Q^*} \right) + \beta \left( \frac{Q^* h}{2} \right) = \frac{1}{\beta} \left( \frac{TRC(Q^*)}{2} \right) + \beta \left( \frac{TRC(Q^*)}{2} \right)$$</p>
@@ -177,7 +177,7 @@
                 $$\frac{TRC(Q')}{TRC(Q^*)} = \frac{1}{2} \left( \frac{1}{\beta} + \beta \right)$$
             </div>
             <p>
-                <strong>Example:</strong> If your estimate for $K$ is 50% too high, your $Q'$ will be $\sqrt{1.5} \approx 1.22$ times $Q^*$ (so $\beta=1.22$). Your cost penalty is $\frac{1}{2}(\frac{1}{1.22} + 1.22) = 1.02$.
+                <strong>Example:</strong> If your estimate for $$K$$ is 50% too high, your $$Q'$ will be $$\sqrt{1.5} \approx 1.22$ times $Q^*$ (so $\beta=1.22$). Your cost penalty is $\frac{1}{2}(\frac{1}{1.22} + 1.22) = 1.02$.
                 A 50% parameter error leads to only a <strong>2% cost penalty</strong>.
             </p>
         </section>
