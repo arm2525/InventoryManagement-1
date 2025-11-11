@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Echelon Inventory Coordination</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Coordinating Multi-Echelon Inventory Systems</h1>
+    <p>
+      Structural results, decomposition techniques, and coordination contracts for
+      serial and distribution systems.
+    </p>
+    <nav>
+      <a href="overview.html">Part 2 Overview</a>
+      <a href="stochastic_control.html">Stochastic Control</a>
+      <a href="service_policies.html">Service Policies</a>
+      <a href="data_driven.html">Data-Driven &amp; Robust</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Multi-Echelon</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 75 minutes</span>
+        <span>References: Clark &amp; Scarf (1960); Graves &amp; Willems (2000); Chen &amp; Federgruen (2000)</span>
+      </div>
+      <p>
+        Clark and Scarf (1960) established echelon-base-stock optimality for serial
+        systems by leveraging convexity and dynamic programming decomposition. Their
+        result implies each stage follows a base-stock policy on echelon inventory.
+        Graves and Willems (2000) introduced guaranteed-service models that decouple
+        stages via lead-time reservations, enabling tractable optimization under
+        service constraints.
+      </p>
+      <p>
+        For distribution systems, Chen and Federgruen (2000) analyzed multi-item joint
+        replenishment and provided performance bounds for heuristic policies.
+        Coordination contracts (buy-back, revenue sharing) align incentives across
+        independent echelons.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Network Policy Lab</h2>
+      <ol class="resource-list">
+        <li>Model a three-stage serial system and compute echelon base-stock levels.</li>
+        <li>Evaluate guaranteed-service formulations under 95% service constraints.</li>
+        <li>Design a coordination contract that aligns a distributor and retailer; analyze profit allocation.</li>
+        <li>Stress-test policies under correlated demand and capacity limits.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Review information sharing effects in Lee, Padmanabhan,
+        and Whang (1997). Propose empirical metrics to quantify bullwhip mitigation in
+        your research domain.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-multiechelon" data-quiz-form data-result-target="quiz-multiechelon-result" data-answers='{"q1":"b","q2":"c","q3":"a"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> Echelon base-stock policies:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Require identical lead times across stages.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> Optimize serial systems under convex costs.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> Are never optimal.
+          </label>
+
+          <p><strong>Question 2.</strong> Guaranteed-service models:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Eliminate safety stock.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Ignore lead times.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Allocate service times across stages to meet system targets.
+          </label>
+
+          <p><strong>Question 3.</strong> Coordination contracts can:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Align incentives between decentralized partners.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Always increase total cost.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> Remove the need for information sharing.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-multiechelon-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Clark, A. J., &amp; Scarf, H. (1960). Optimal policies for a multi-echelon inventory problem. <em>Management Science</em>, 6(4), 475&ndash;490.</li>
+        <li>Graves, S. C., &amp; Willems, S. P. (2000). Multi-echelon inventory profiles in supply chains. <em>Management Science</em>, 46(3), 369&ndash;384.</li>
+        <li>Chen, F., &amp; Federgruen, A. (2000). Mean-variance trade-offs in joint replenishment. <em>Operations Research</em>, 48(6), 989&ndash;1005.</li>
+        <li>Lee, H. L., Padmanabhan, V., &amp; Whang, S. (1997). Information distortion in a supply chain: The bullwhip effect. <em>Management Science</em>, 43(4), 546&ndash;558.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Compare network coordination insights with service-level driven policies next.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

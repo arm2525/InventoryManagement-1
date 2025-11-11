@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stochastic Control &amp; Base-Stock Policies</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Stochastic Dynamic Control of Inventory</h1>
+    <p>
+      From classic base-stock policies to partially observed systems and approximate
+      dynamic programming.
+    </p>
+    <nav>
+      <a href="overview.html">Part 2 Overview</a>
+      <a href="multi_echelon.html">Multi-Echelon</a>
+      <a href="service_policies.html">Service Policies</a>
+      <a href="data_driven.html">Data-Driven &amp; Robust</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Stochastic Control</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 75 minutes</span>
+        <span>References: Scarf (1960); Veinott (1966); Powell (2011)</span>
+      </div>
+      <p>
+        Scarf (1960) proved that in the single-location periodic-review model with
+        convex costs and i.i.d. demand, an optimal policy is of the (s,S) form. The
+        result hinges on <em>K</em>-convexity of the cost-to-go function, enabling
+        threshold-based replenishment. Veinott (1966) extended structural properties to
+        monotone optimal policies in dynamic programs with multidimensional state.
+      </p>
+      <p>
+        When state spaces explode, approximate dynamic programming (ADP) provides
+        tractable approximations. Powell (2011) outlines value function approximation
+        and policy search strategies that preserve structural insights while scaling to
+        high-dimensional problems.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Approximate Policy Design</h2>
+      <ol class="resource-list">
+        <li>Derive the optimal (s,S) policy via value iteration for a discrete demand model.</li>
+        <li>Implement a base-stock policy and compare costs under varying demand variance.</li>
+        <li>Prototype an ADP algorithm using value function approximation; document convergence.</li>
+        <li>Discuss policy robustness when demand becomes Markov-modulated or partially observed.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Survey partially observed inventory models (e.g., Lovejoy, 1990). Formulate a belief-state
+        reinforcement learning experiment using your research dataset.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-stochastic" data-quiz-form data-result-target="quiz-stochastic-result" data-answers='{"q1":"c","q2":"a","q3":"b"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> Scarf's theorem relies on:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Deterministic demand only.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> Linear holding costs.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> K-convex cost-to-go functions ensuring (s,S) optimality.
+          </label>
+
+          <p><strong>Question 2.</strong> Base-stock policies are optimal when:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Demand is i.i.d. and costs are convex.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Holding cost is negative.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Ordering costs are strictly concave.
+          </label>
+
+          <p><strong>Question 3.</strong> Approximate dynamic programming typically:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Guarantees exact optimality.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Trades optimality for tractability via approximations.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> Requires no value function approximation.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-stochastic-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Scarf, H. (1960). The optimality of (s,S) policies in the dynamic inventory problem. In <em>Mathematical Methods in the Social Sciences</em> (pp. 196&ndash;202). Stanford University Press.</li>
+        <li>Veinott, A. F. (1966). On the optimality of (s,S) inventory policies: New results. <em>Management Science</em>, 12(7), 618&ndash;624.</li>
+        <li>Powell, W. B. (2011). <em>Approximate Dynamic Programming</em> (2nd ed.). Wiley.</li>
+        <li>Lovejoy, W. S. (1990). Myopic heuristics for partially observed Markov decision processes. <em>Operations Research</em>, 38(3), 481&ndash;498.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Map structural results to the networked settings explored next.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

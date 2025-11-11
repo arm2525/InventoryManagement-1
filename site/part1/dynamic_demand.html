@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic &amp; Discrete Demand</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Dynamic Demand and Lot Sizing</h1>
+    <p>
+      Planning replenishment for time-varying deterministic demand via dynamic
+      programming and heuristic lot sizing rules.
+    </p>
+    <nav>
+      <a href="overview.html">Part 1 Overview</a>
+      <a href="eoq.html">EOQ</a>
+      <a href="safety_stock.html">Safety Stock</a>
+      <a href="newsvendor.html">Newsvendor</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Dynamic Demand</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 45 minutes</span>
+        <span>References: Wagner &amp; Whitin (1958); Silver, Pyke &amp; Peterson (1998)</span>
+      </div>
+      <p>
+        The deterministic dynamic lot-sizing problem minimizes total ordering and
+        holding cost over a finite horizon with non-stationary demand. Wagner and
+        Whitin (1958) prove that an optimal solution orders only at periods with zero
+        inventory carry-over and derive an \(O(T^2)\) dynamic program. The recursion
+        evaluates candidate order-up-to points via cost-to-go functions.
+      </p>
+      <p>
+        In practice, heuristics such as Silver-Meal, Least Unit Cost, and Part-Period
+        Balancing offer near-optimal solutions with lower computational burden.
+        Silver, Pyke, and Peterson (1998) survey performance bounds and hybrid
+        heuristics suitable for rolling-horizon planning.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Lot-Sizing Comparisons</h2>
+      <ol class="resource-list">
+        <li>Implement Wagner-Whitin dynamic programming for a 12-period dataset.</li>
+        <li>Compare cost, order frequency, and computational time against Silver-Meal and Least Unit Cost heuristics.</li>
+        <li>Design stress tests with bursty demand to observe heuristic degradation.</li>
+        <li>Summarize managerial implications for seasonal assortment planning.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Examine rolling-horizon stability results in
+        Blackburn and Millen (1980). Propose a learning-augmented heuristic that adapts
+        lot-sizing parameters using forecast error feedback.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-dynamic" data-quiz-form data-result-target="quiz-dynamic-result" data-answers='{"q1":"b","q2":"c","q3":"a"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> Wagner-Whitin optimality relies on:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Negative demand periods.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> Zero ending inventory between orders.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> Random lead times.
+          </label>
+
+          <p><strong>Question 2.</strong> The Silver-Meal heuristic selects order horizons by:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Minimizing cumulative holding cost only.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Fixing order frequency in advance.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Minimizing average cost per period as the horizon expands.
+          </label>
+
+          <p><strong>Question 3.</strong> Dynamic programming cost-to-go functions enable:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Optimal decisions via backward induction.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Randomized policies only.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> Myopic decisions identical to EOQ.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-dynamic-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Wagner, H. M., &amp; Whitin, T. M. (1958). Dynamic version of the economic lot size model. <em>Management Science</em>, 5(1), 89&ndash;96.</li>
+        <li>Silver, E. A., Pyke, D. F., &amp; Peterson, R. (1998). <em>Inventory Management and Production Planning and Scheduling</em> (3rd ed.). Wiley.</li>
+        <li>Blackburn, J. D., &amp; Millen, R. A. (1980). Heuristic lot-sizing performance in rolling schedules. <em>Decision Sciences</em>, 11(4), 691&ndash;701.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Consider how dynamic lot sizing integrates with stochastic demand models in Part 2.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

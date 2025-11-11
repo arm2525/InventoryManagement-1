@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data-Driven and Robust Inventory</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Data-Driven, Robust, and Learning-Augmented Policies</h1>
+    <p>
+      Leveraging data analytics, robust optimization, and machine learning to refine
+      inventory decisions.
+    </p>
+    <nav>
+      <a href="overview.html">Part 2 Overview</a>
+      <a href="stochastic_control.html">Stochastic Control</a>
+      <a href="multi_echelon.html">Multi-Echelon</a>
+      <a href="service_policies.html">Service Policies</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Data-Driven &amp; Robust</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 60 minutes</span>
+        <span>References: Bertsimas &amp; Thiele (2006); Levi, Roundy &amp; Shmoys (2007); Oroojlooyjadid et al. (2020)</span>
+      </div>
+      <p>
+        Robust optimization protects against demand ambiguity by optimizing over
+        uncertainty sets. Bertsimas and Thiele (2006) derive adjustable policies that
+        remain tractable for inventory control. Levi, Roundy, and Shmoys (2007) introduce
+        approximation algorithms for stochastic inventory routing and lost-sales models,
+        highlighting performance guarantees.
+      </p>
+      <p>
+        Learning-based approaches, such as deep reinforcement learning for newsvendor
+        variants (Oroojlooyjadid et al., 2020), demonstrate how data can continuously
+        refine policies. Combining statistical estimation with prescriptive analytics is
+        central to modern inventory research.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Analytics Sandbox</h2>
+      <ol class="resource-list">
+        <li>Construct demand ambiguity sets using historical data quantiles.</li>
+        <li>Implement a robust base-stock policy and benchmark against stochastic programming.</li>
+        <li>Prototype a reinforcement learning agent for single-item inventory control.</li>
+        <li>Document computational performance and interpretability challenges.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Identify opportunities to incorporate causal inference
+        into demand forecasting for inventory decisions. Outline a research proposal.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-data" data-quiz-form data-result-target="quiz-data-result" data-answers='{"q1":"c","q2":"a","q3":"b"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> Robust optimization typically:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Requires exact demand distributions.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> Ignores worst-case scenarios.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> Optimizes against all distributions in an uncertainty set.
+          </label>
+
+          <p><strong>Question 2.</strong> Approximation algorithms in inventory aim to:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Provide provable performance bounds when exact solutions are intractable.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Guarantee exact optimality with zero computation.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Replace the need for modeling.
+          </label>
+
+          <p><strong>Question 3.</strong> Reinforcement learning for inventory control:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Cannot handle stochastic demand.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Learns policies through interaction with simulated environments.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> Requires closed-form optimal policies as input.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-data-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Bertsimas, D., &amp; Thiele, A. (2006). A robust optimization approach to inventory theory. <em>Operations Research</em>, 54(1), 150&ndash;168.</li>
+        <li>Levi, R., Roundy, R., &amp; Shmoys, D. (2007). Provably near-optimal inventory routing policies. <em>Operations Research</em>, 55(2), 294&ndash;309.</li>
+        <li>Oroojlooyjadid, A., Snyder, L. V., Takáč, M., &amp; Vakharia, A. J. (2020). Inventory management via deep reinforcement learning. <em>Production and Operations Management</em>, 29(8), 1998&ndash;2017.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Conclude Part 2 by summarizing cross-lesson insights before advancing to Part 3.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single-Period &amp; Newsvendor Decisions</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Single-Period Inventory &mdash; The Newsvendor Problem</h1>
+    <p>
+      Exploring critical fractiles, risk attitudes, and behavioral considerations in
+      single-period inventory control.
+    </p>
+    <nav>
+      <a href="overview.html">Part 1 Overview</a>
+      <a href="eoq.html">EOQ</a>
+      <a href="safety_stock.html">Safety Stock</a>
+      <a href="dynamic_demand.html">Lot Sizing</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Newsvendor</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 45 minutes</span>
+        <span>References: Arrow, Harris &amp; Marschak (1951); Khouja (1999); Perakis &amp; Roels (2007)</span>
+      </div>
+      <p>
+        The single-period or newsvendor model selects an order quantity <em>Q</em> that
+        maximizes expected profit under uncertain demand. Arrow, Harris, and Marschak
+        (1951) derive the critical fractile condition \(F(Q^*) = \frac{p-c}{p-v}\), where
+        <em>p</em> is the selling price, <em>c</em> the procurement cost, and <em>v</em>
+        the salvage value. The ratio equates the marginal costs of overage and underage.
+      </p>
+      <p>
+        Behavioral and risk considerations lead to systematic deviations. Khouja (1999)
+        surveys model variants (price-dependent demand, multiple products), while
+        Perakis and Roels (2007) analyze robust newsvendor formulations with demand
+        ambiguity sets.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Critical Fractile Experiments</h2>
+      <ol class="resource-list">
+        <li>Calibrate the profit-maximizing <em>Q</em> for three demand distributions (Normal, Poisson, empirical bootstrap).</li>
+        <li>Simulate 5,000 trials to estimate expected profit and service level for each policy.</li>
+        <li>Introduce risk-averse utility and recompute optimal <em>Q</em>; interpret changes.</li>
+        <li>Draft discussion questions on behavioral biases (pull-to-center, demand chasing).</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Identify empirical studies measuring real-world
+        newsvendor performance (e.g., Schweitzer &amp; Cachon, 2000). Design an experiment
+        using Ph.D. cohorts to test decision support interventions.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-newsvendor" data-quiz-form data-result-target="quiz-newsvendor-result" data-answers='{"q1":"a","q2":"c","q3":"b"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> The critical fractile equates:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Marginal underage and overage costs.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> Purchase price and salvage value.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> Expected demand and supply.
+          </label>
+
+          <p><strong>Question 2.</strong> Risk-averse decision makers typically:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Order more than the risk-neutral optimum.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Have the same order as risk-neutral agents.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Order less than the risk-neutral optimum when facing overage risk.
+          </label>
+
+          <p><strong>Question 3.</strong> Distribution-free newsvendor models:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Require exact demand distributions.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Optimize against worst-case demand within an ambiguity set.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> Ignore salvage value effects.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-newsvendor-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Arrow, K. J., Harris, T., &amp; Marschak, J. (1951). Optimal inventory policy. <em>Econometrica</em>, 19(3), 250&ndash;272.</li>
+        <li>Khouja, M. (1999). The single-period (news-vendor) problem: literature review and suggestions for future research. <em>Omega</em>, 27(5), 537&ndash;553.</li>
+        <li>Perakis, G., &amp; Roels, G. (2007). Robust newsvendor networks. <em>Management Science</em>, 53(9), 1507&ndash;1521.</li>
+        <li>Schweitzer, M. E., &amp; Cachon, G. P. (2000). Decision bias in the newsvendor problem. <em>Management Science</em>, 46(3), 404&ndash;420.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Synthesize insights across Part 1 to prepare for stochastic control in Part 2.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

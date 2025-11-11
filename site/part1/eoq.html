@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EOQ &mdash; Economic Order Quantity</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Economic Order Quantity (EOQ)</h1>
+    <p>
+      Formal derivation of the classical EOQ model, its extensions, and research
+      prompts for doctoral-level inquiry.
+    </p>
+    <nav>
+      <a href="overview.html">Part 1 Overview</a>
+      <a href="safety_stock.html">Safety Stock</a>
+      <a href="dynamic_demand.html">Lot Sizing</a>
+      <a href="newsvendor.html">Newsvendor</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; EOQ</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 45 minutes</span>
+        <span>References: Harris (1913); Wilson (1934); Hadley &amp; Whitin (1963)</span>
+      </div>
+      <p>
+        The Economic Order Quantity model minimizes the long-run average cost per unit
+        time by balancing ordering and holding costs under deterministic demand.
+        Harris (1913) first articulated the cost trade-off, while Wilson (1934) popularized
+        the closed-form solution. The optimal order quantity is obtained by solving
+        <math>
+          <mi>\min_{Q &gt; 0}</mi>
+          <mo>\{</mo>
+          <mfrac>
+            <mi>KD</mi>
+            <mi>Q</mi>
+          </mfrac>
+          <mo>+</mo>
+          <mfrac>
+            <mi>hQ</mi>
+            <mn>2</mn>
+          </mfrac>
+          <mo>\}</mo>
+        </math>, where <em>K</em> is the fixed ordering cost, <em>D</em> the annual demand,
+        and <em>h</em> the holding cost rate. Differentiation yields the well-known
+        solution <em>Q*</em> = <span>\(\sqrt{2KD/h}\)</span>.
+      </p>
+      <p>
+        Assumptions include stationary demand, instantaneous replenishment, and unlimited
+        storage capacity. Hadley and Whitin (1963) provide a comprehensive treatment,
+        including extensions for backorders and quantity discounts.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: EOQ Calibration and Sensitivity</h2>
+      <ol class="resource-list">
+        <li>Estimate annual demand and holding cost from your research dataset.</li>
+        <li>Compute EOQ, reorder cycle, and average inventory; document assumptions.</li>
+        <li>Perform one-way sensitivity on <em>K</em>, <em>D</em>, and <em>h</em> and visualize the cost surface.</li>
+        <li>Debate the validity of the deterministic assumption for your context.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Identify at least two papers extending EOQ to
+        data-driven or stochastic environments (e.g., Chen et al., 2013). Summarize
+        estimation techniques and discuss integration with your workshop findings.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-eoq" data-quiz-form data-result-target="quiz-eoq-result" data-answers='{"q1":"b","q2":"a","q3":"c"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <label for="q1b">
+            <input type="radio" name="q1" id="q1a" value="a" /> The EOQ minimizes purchase price.
+          </label>
+          <label>
+            <input type="radio" name="q1" id="q1b" value="b" /> The EOQ balances ordering and holding costs per unit time.
+          </label>
+          <label>
+            <input type="radio" name="q1" id="q1c" value="c" /> The EOQ maximizes order frequency.
+          </label>
+
+          <p><strong>Question 2.</strong> The EOQ closed form assumes:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Deterministic, stationary demand and instantaneous replenishment.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Time-varying stochastic demand.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Capacity constraints binding at each cycle.
+          </label>
+
+          <p><strong>Question 3.</strong> Sensitivity analysis of EOQ typically shows:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> EOQ is linear in holding cost.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> EOQ doubles when demand halves.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> EOQ changes with the square root of parameter ratios.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-eoq-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Harris, F. W. (1913). <em>How many parts to make at once</em>. Factory, The Magazine of Management, 10(2), 135&ndash;136.</li>
+        <li>Wilson, R. H. (1934). <em>A scientific routine for stock control</em>. Harvard Business Review, 13(1), 116&ndash;128.</li>
+        <li>Hadley, G., &amp; Whitin, T. M. (1963). <em>Analysis of Inventory Systems</em>. Prentice-Hall.</li>
+        <li>Chen, L., Li, Y., &amp; Mu, X. (2013). Data-driven EOQ under demand uncertainty. <em>International Journal of Production Economics</em>, 145(1), 87&ndash;95.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Reflect on how EOQ informs the advanced policies studied in Part 2.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

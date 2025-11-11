@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safety Stock Design</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Safety Stock and Service Levels</h1>
+    <p>
+      Quantifying variability buffers through service-level based methods and
+      probabilistic analysis.
+    </p>
+    <nav>
+      <a href="overview.html">Part 1 Overview</a>
+      <a href="eoq.html">EOQ</a>
+      <a href="dynamic_demand.html">Lot Sizing</a>
+      <a href="newsvendor.html">Newsvendor</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Safety Stock</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 45 minutes</span>
+        <span>References: Zipkin (2000); Chopra &amp; Meindl (2023); Graves (1986)</span>
+      </div>
+      <p>
+        Safety stock protects against demand and supply variability. The classical
+        approach computes the reorder point as <em>R</em> = <em>dL</em> + <em>z</em>\(\sigma_L\),
+        where <em>dL</em> is mean demand over lead time, \(\sigma_L\) the lead-time
+        demand standard deviation, and <em>z</em> the standard normal quantile achieving
+        a target cycle-service level. Zipkin (2000) details how different service
+        metrics (fill rate vs. CSL) lead to distinct formulations.
+      </p>
+      <p>
+        When lead times are stochastic or correlated, Graves (1986) shows that
+        convolution methods and safety stock placement rules change materially. Chopra
+        and Meindl (2023) extend the discussion to multi-echelon supply chains,
+        emphasizing risk pooling and postponement.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Service-Level Experimentation</h2>
+      <ol class="resource-list">
+        <li>Derive demand and lead-time distributions from empirical data.</li>
+        <li>Compute safety stock for CSL targets of 90%, 95%, and 99%; record resulting fill rates.</li>
+        <li>Simulate 1,000 cycles to compare theoretical and simulated service levels.</li>
+        <li>Design a policy memo recommending safety stock placement across two echelons.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Review stochastic lead-time models in Song &amp;
+        Zipkin (1996). Propose a Bayesian update scheme for lead-time variability using
+        recent empirical evidence.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-safety" data-quiz-form data-result-target="quiz-safety-result" data-answers='{"q1":"c","q2":"b","q3":"a"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> A higher service level generally implies:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Lower safety stock.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> No change in safety stock.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> Higher safety stock.
+          </label>
+
+          <p><strong>Question 2.</strong> Fill rate differs from cycle-service level because:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> It ignores backorders.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> It measures the fraction of demand satisfied immediately.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> It is always equal to CSL in normal demand.
+          </label>
+
+          <p><strong>Question 3.</strong> Risk pooling across echelons typically:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Reduces required safety stock per location.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Doubles total safety stock.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> Eliminates lead-time variability.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-safety-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Zipkin, P. (2000). <em>Foundations of Inventory Management</em>. McGraw-Hill.</li>
+        <li>Chopra, S., &amp; Meindl, P. (2023). <em>Supply Chain Management: Strategy, Planning, and Operation</em> (8th ed.). Pearson.</li>
+        <li>Graves, S. C. (1986). A multi-echelon inventory model for a repairable item with one-for-one replenishment. <em>Management Science</em>, 32(11), 1461&ndash;1476.</li>
+        <li>Song, J.-S., &amp; Zipkin, P. (1996). Managing inventory with the lost-sales concept. <em>Operations Research</em>, 44(5), 836&ndash;846.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Document how safety stock insights alter your EOQ-derived cycle policies.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>

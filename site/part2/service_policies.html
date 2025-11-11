@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service-Level Driven Policies</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Service-Level Optimization and Contracts</h1>
+    <p>
+      Integrating service guarantees, penalty costs, and collaborative planning across
+      the supply chain.
+    </p>
+    <nav>
+      <a href="overview.html">Part 2 Overview</a>
+      <a href="stochastic_control.html">Stochastic Control</a>
+      <a href="multi_echelon.html">Multi-Echelon</a>
+      <a href="data_driven.html">Data-Driven &amp; Robust</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Service-Level Policies</div>
+
+    <section>
+      <h2>Theory Essentials</h2>
+      <div class="lesson-meta">
+        <span>Duration: 60 minutes</span>
+        <span>References: Cachon &amp; Lariviere (2005); Banerjee, Burton &amp; Banerjee (2012); Boyaci &amp; Gallego (2004)</span>
+      </div>
+      <p>
+        Service-level driven policies translate customer requirements into optimization
+        constraints. Cachon and Lariviere (2005) analyze how revenue-sharing and buy-back
+        contracts coordinate service incentives. Boyaci and Gallego (2004) study pricing
+        and lead-time decisions under service targets.
+      </p>
+      <p>
+        Banerjee, Burton, and Banerjee (2012) extend newsvendor contracts to service-level
+        agreements with penalties, showing how collaborative planning improves both fill
+        rates and profitability.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workshop: Designing Service Agreements</h2>
+      <ol class="resource-list">
+        <li>Convert customer-facing SLAs into inventory control parameters.</li>
+        <li>Model a penalty-based contract between manufacturer and retailer; solve for optimal terms.</li>
+        <li>Simulate the contract under demand shocks to evaluate risk-sharing.</li>
+        <li>Draft discussion points on fairness and information requirements.</li>
+      </ol>
+      <div class="callout">
+        <strong>Research prompt:</strong> Explore omnichannel service policies (e.g., Gallino &amp; Moreno, 2014) and propose
+        metrics for digital channel responsiveness.
+      </div>
+    </section>
+
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-service" data-quiz-form data-result-target="quiz-service-result" data-answers='{"q1":"b","q2":"c","q3":"a"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <p><strong>Question 1.</strong> Revenue-sharing contracts often:</p>
+          <label>
+            <input type="radio" name="q1" value="a" /> Reduce retailer incentives to invest in service.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="b" /> Align service incentives between supplier and retailer.
+          </label>
+          <label>
+            <input type="radio" name="q1" value="c" /> Ignore demand variability.
+          </label>
+
+          <p><strong>Question 2.</strong> Penalty-based SLAs typically:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Increase profits without affecting service.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Have no effect on ordering behavior.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Encourage higher safety stock to avoid penalties.
+          </label>
+
+          <p><strong>Question 3.</strong> Joint pricing and service models highlight:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> Trade-offs between lead time, price, and service investment.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> Independence of pricing from service.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> That service levels determine demand exactly.
+          </label>
+
+          <button type="submit">Submit</button>
+          <div id="quiz-service-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>Key References</h2>
+      <ul class="resource-list">
+        <li>Cachon, G. P., &amp; Lariviere, M. A. (2005). Supply chain coordination with revenue-sharing contracts. <em>Management Science</em>, 51(1), 30&ndash;44.</li>
+        <li>Boyaci, T., &amp; Gallego, G. (2004). Supply chain coordination under service level and lead time flexibility. <em>Manufacturing &amp; Service Operations Management</em>, 6(4), 319&ndash;335.</li>
+        <li>Banerjee, S., Burton, J., &amp; Banerjee, A. (2012). Coordinated ordering and pricing with service level agreements. <em>International Journal of Production Economics</em>, 140(2), 634&ndash;644.</li>
+        <li>Gallino, S., &amp; Moreno, A. (2014). Integration of online and offline channels in retail: The case of buy-online pickup-in-store. <em>Management Science</em>, 60(6), 1489&ndash;1506.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    Transition to data-driven and robust policies to complete Part 2.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
+</body>
+</html>
