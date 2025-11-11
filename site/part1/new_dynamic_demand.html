@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lot Sizing & Dynamic Demand</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template
+    -->
+    <header>
+        <h1>Lot Sizing for Dynamic Demand</h1>
+        <p>Addressing dynamic and discrete demand over a finite horizon using optimal and heuristic models.</p>
+        <nav>
+            <a href="overview.html">Part 1 Overview</a>
+            <a href="part1_module1_eoq_revised.html">EOQ</a>
+            <a href="safety_stock.html">Safety Stock</a>
+            <a href="newsvendor.html">Newsvendor</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Dynamic Demand</div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is massively expanded from the original stub
+          to include the formal derivations for DLS models.
+        -->
+        <section>
+            <h2>Theory Essentials: The Dynamic Lot Sizing (DLS) Problem</h2>
+            <div class="lesson-meta">
+                <span>Duration: 45 Minutes</span>
+                <span>References: Wagner & Whitin (1958); Silver & Meal (1973)</span>
+            </div>
+            <p>
+                The EOQ and $(Q, R)$ models assume demand is stationary (constant, or random around a constant mean). This assumption is violated in many real-world scenarios, such as:
+            </p>
+            <ul>
+                <li><strong>Seasonality:</strong> Demand for winter coats is high in autumn and zero in summer.</li>
+                <li><strong>MRP Systems:</strong> The "demand" for a component is "lumpy"—it's zero for three weeks, then 500 units are needed for a production run.</li>
+            </ul>
+            <p>
+                The <strong>Dynamic Lot Sizing (DLS)</strong> problem addresses this. We have a finite planning horizon $T$ (e.g., 12 weeks), and the demand $d_t$ for each period $t = 1, ..., T$ is known but variable.
+            </p>
+
+            <h3>1.1 Formal Problem Definition</h3>
+            <p>We define the following parameters (assuming costs are stationary for simplicity):</p>
+            <ul>
+                <li>$T$ = Number of periods in the planning horizon.</li>
+                <li>$d_t$ = Known demand in period $t$.</li>
+                <li>$K$ = Fixed ordering cost per order placed.</li>
+                <li>$h$ = Holding cost to carry one unit from period $t$ to $t+1$.</li>
+            </ul>
+            <p>And the decision variables:</p>
+            <ul>
+                <li>$Q_t$ = Order quantity in period $t$.</li>
+                <li>$I_t$ = Inventory level at the *end* of period $t$.</li>
+                <li>$\delta_t$ = A binary variable: 1 if $Q_t > 0$, 0 otherwise.</li>
+            </ul>
+            <p>The objective is to find an ordering plan $\{Q_1, Q_2, ..., Q_T\}$ that minimizes total cost:</p>
+            <blockquote>
+                $$ \min Z = \sum_{t=1}^T (K \cdot \delta_t + h \cdot I_t) $$
+                <p>Subject to (the inventory balance equation):</p>
+                $$ I_{t-1} + Q_t - I_t = d_t \quad \text{for all } t=1...T $$
+                <p>(Assuming $I_0 = 0$ and $I_t, Q_t \ge 0$)</p>
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>2. The Optimal Solution: Wagner-Whitin (WW) Algorithm</h2>
+            <p>
+                This problem could be solved as a mixed-integer program, but in their seminal 1958 paper, Wagner and Whitin developed a much more efficient $O(T^2)$ dynamic programming solution. This algorithm is built on two powerful properties.
+            </p>
+            
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">Property 1: The Zero-Inventory Property (ZIP)</h4>
+                <p>
+                    An optimal policy will <strong>only place an order in period $t$ if the starting inventory $I_{t-1} = 0$</strong>.
+                </p>
+                <p>
+                    <strong>Proof (by contradiction):</strong> Imagine an optimal policy orders $Q_t > 0$ when $I_{t-1} > 0$. That inventory $I_{t-1}$ must have come from an order in some period $k < t$. We could simply *increase* the order in period $k$ to cover period $t$'s demand, and set $Q_t = 0$. This would save the ordering cost $K$ in period $t$ and *at worst* incur the same holding costs (or less). Thus, the original policy could not have been optimal.
+                </p>
+            </div>
+            
+            <p>
+                The ZIP implies that in any period $t$, the demand $d_t$ is met either by a new order $Q_t$ or by inventory carried over from a *previous* order, but never both.
+            </p>
+
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">Property 2: The Planning Horizon Theorem</h4>
+                <p>
+                    If, in an optimal plan, it is best to place an order in period $t^*$ to satisfy demand for period $k$ (where $t^* \le k$), then the optimal plan for periods $1, ..., t^*-1$ is independent of the demands $d_t$ for $t \ge k$.
+                </p>
+                <p>
+                    This property is what allows the DP to work. It proves we can make decisions for the early periods without needing to look at all future demands simultaneously.
+                </p>
+            </div>
+
+            <h3>2.1 The DP Formulation (Forward Pass)</h3>
+            <p>Let $f_t$ = The minimum possible cost to satisfy demand for periods $1, 2, ..., t$.</p>
+            <p>To calculate $f_t$, we use the ZIP. The demand $d_t$ must have been satisfied by an order placed in some period $j \le t$. This order also covered all demand for periods $j, j+1, ..., t-1$.</p>
+            <p>We can find $f_t$ by considering all possible "last order" periods $j$:</p>
+            <blockquote>
+                $$ f_t = \min_{1 \le j \le t} \{ f_{j-1} + C_{jt} \} $$
+            </blockquote>
+            <p>Where $f_0 = 0$ and $C_{jt}$ is the <strong>total cost of ordering in period $j$ to satisfy all demand from $j$ through $t$</strong>.</p>
+            <p>$C_{jt}$ = (Ordering Cost in $j$) + (Holding costs for $d_{j+1}, ..., d_t$).</p>
+            <blockquote>
+                $$ C_{jt} = K + h \cdot [ (1)d_{j+1} + (2)d_{j+2} + ... + (t-j)d_t ] $$
+            </blockquote>
+            <p>The algorithm works by finding $f_1$, then $f_2$, and so on, up to $f_T$. The final $f_T$ is the optimal cost for the entire horizon. To find the plan, we trace back which $j$ was chosen at each step $t$.</p>
+
+        </section>
+
+        <section>
+            <h2>3. Practical Heuristics (for $O(T^2)$ is too slow)</h2>
+            <p>The WW algorithm is optimal, but computationally intensive for large $T$. In practice (e.g., in most MRP/ERP systems), simpler, myopic heuristics are used.</p>
+            
+            <h3>3.1 Silver-Meal (SM) Heuristic</h3>
+            <ul>
+                <li><strong>Logic:</strong> "Minimize the average cost *per period* for the current order."</li>
+                <li><strong>Method:</strong> We are in period $t$ (with $I_{t-1}=0$). We must order. How many periods ($n$) should this order cover?</li>
+                <li>Let $C(n)$ = Cost of ordering in $t$ to cover $n$ periods (from $t$ to $t+n-1$).</li>
+                <li>$C(n) = K + h \cdot [ (0)d_t + (1)d_{t+1} + ... + (n-1)d_{t+n-1} ]$</li>
+                <li>$AC(n) = C(n) / n$ (Average cost per period)</li>
+                <li><strong>Rule:</strong> Keep adding period $t+n$ to the order as long as $AC(n+1) < AC(n)$. Stop and order to cover $n$ periods when the average cost per period starts to increase.</li>
+            </ul>
+
+            <h3>3.2 Part-Period Balancing (PPB)</h3>
+            <ul>
+                <li><strong>Logic:</strong> "Order enough to make the total holding cost *approximately equal* to the ordering cost." (This is a dynamic version of the EOQ's core tradeoff).</li>
+                <li><strong>Method:</strong> We are in period $t$. We must order. Find the number of periods $n$ to cover such that the total holding cost $H(n)$ is as close as possible to the setup cost $K$.</li>
+                <li>$H(n) = h \cdot [ (0)d_t + (1)d_{t+1} + ... + (n-1)d_{t+n-1} ]$</li>
+                <li><strong>Rule:</strong> Find $n$ such that $H(n) \approx K$. (In practice, find $n$ that minimizes $|H(n) - K|$).</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2>Workshop: Heuristic vs. Optimal</h2>
+            <ol class="resource-list">
+                <li>Given a 12-period demand forecast, apply the Silver-Meal heuristic.</li>
+                <li>Apply the Part-Period Balancing heuristic to the same forecast.</li>
+                <li>(Challenge) Implement the Wagner-Whitin algorithm in a simple script or spreadsheet.</li>
+                <li>Compare total costs. Discuss the "planning horizon" property of WW.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Investigate extensions to the DLS problem, such as capacity constraints (the Capacitated Lot Sizing Problem, CLSP), backordering, or stochastic demand (which leads to ($s, S$) policies).
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, calculation-based quiz with embedded JS,
+          matching the template format.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-dls">
+                <div class="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                        <strong>Data for all questions:</strong>
+                        <ul>
+                            <li>Ordering Cost ($K$): $100 per order</li>
+                            <li>Holding Cost ($h$): $1 per unit per period</li>
+                            <li>Demand ($d_t$): $d_1=20, d_2=50, d_3=30, d_4=60$</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Question 1.</strong> Using the <strong>Silver-Meal (SM)</strong> heuristic, you are in period 1 ($t=1$) and need to decide how many periods to order for. What is the correct decision?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">Order for 1 period ($n=1$). $AC(1) = 100$.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">Order for 2 periods ($n=2$). $AC(2) = 75$.</label>
+                    </div>
+                    <div>
+                        <!-- FIX: Corrected the faulty value in this option -->
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">Order for 3 periods ($n=3$). $AC(3) = 70$.</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> Based on the correct answer to Q1 (the minimum $AC(n)$), what is the final order policy?</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">Order $Q_1 = 70$ (for $t=1,2$) and $Q_3 = 90$ (for $t=3,4$).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">Order $Q_1 = 20$, $Q_2 = 50$, $Q_3 = 30$, ... (Lot-for-Lot).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">Order $Q_1 = 100$ (for $t=1,2,3$) and $Q_4 = 60$.</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> The Wagner-Whitin algorithm's "Zero-Inventory Property" proves that an optimal policy...</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">...will never hold inventory ($I_t = 0$ for all $t$).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">...will only place an order if the period starts with zero inventory.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">...is only optimal if $K=0$.</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-dls-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Wagner, H. M., & Whitin, T. M. (1958). Dynamic version of the economic lot size model. <em>Management Science</em>, 5(1), 89-96.</li>
+                <li>Silver, E. A., & Meal, H. C. (1973). A heuristic for selecting lot size quantities for the case of a deterministic time-varying demand rate and no shortages. <em>Production and Inventory Management</em>, 14(2), 64-74.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Reflect on how DLS heuristics are implemented in modern MRP/ERP systems.
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-dls').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            /*
+              FIX: Updated correctAnswers to reflect the fixed quiz
+              The correct logic is:
+              AC(1) = 100
+              AC(2) = 75
+              AC(3) = 70  <-- MINIMUM
+              AC(4) = 97.5
+              SM rule: Stop when AC increases. This happens at n=3.
+              So, Q1 answer is 'c', and Q2 answer is 'c'.
+            */
+            const correctAnswers = {
+                q1: 'c',
+                q2: 'c',
+                q3: 'b'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            /*
+              FIX: Removed my internal monologue and unescaped quotes
+              that were causing the SyntaxError.
+            */
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> <br/> $AC(1) = (K)/1 = 100/1 = 100$. <br/> $AC(2) = (K + h d_2)/2 = (100 + 50)/2 = 75$. <br/> $AC(3) = (K + h d_2 + 2h d_3)/3 = (100 + 50 + 2 \cdot 30)/3 = 210/3 = 70$. <br/> $AC(4) = (K + h d_2 + 2h d_3 + 3h d_4)/4 = (210 + 3 \cdot 60)/4 = 390/4 = 97.5$. <br/> The minimum average cost is $AC(3)=70$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> You must calculate the average cost per period $AC(n) = C(n)/n$. The minimum is $AC(3) = 70$. (Check the $AC(4)$ calculation to confirm $AC(3)$ is the minimum).</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> The SM heuristic finds the minimum $AC(n)$ is at $n=3$ (since $AC(4) > AC(3)$). Therefore, it places an order in $t=1$ to cover periods 1, 2, and 3. The quantity is $Q_1 = d_1+d_2+d_3 = 20+50+30=100$. The next time it orders is in $t=4$ for $Q_4=60$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> The answer from Q1 dictates the policy. Since the minimum average cost was for $n=3$ periods, the first order must cover periods 1, 2, and 3.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> This is the key insight. It means an order $Q_t$ will *either* be 0, or it will be $d_t + ... + d_k$ for some $k \ge t$. It will never be a "partial" order just to top-off existing inventory.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> The policy *does* hold inventory (e.g., an order in $t=1$ covers $d_2$, which is held). The property is about *when* an order is placed.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-dls-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
