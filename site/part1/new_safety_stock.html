@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safety Stock & Service Levels</title>
+    
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Safety Stock and Service Levels</h1>
+        <p>
+            Quantifying variability buffers through service-level based methods and
+            probabilistic analysis.
+        </p>
+        <nav>
+            <a href="overview.html">Part 1 Overview</a>
+            <a href="part1_module1_eoq_revised.html">EOQ</a>
+            <a href="dynamic_demand.html">Lot Sizing</a>
+            <a href="newsvendor.html">Newsvendor</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Safety Stock</div>
+
+        <section>
+            <h2>Theory Essentials: Modeling Stochastic Demand</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.0 Hour</span>
+                <span>References: Hadley & Whitin (1963); Scarf (1958); Zipkin (2000)</span>
+            </div>
+            <p>
+                In Module 1.1, we operated in a deterministic world. We now relax the most restrictive assumption: that demand is constant and known. When demand is stochastic (random), the EOQ model is insufficient because it provides no protection against stockouts.
+            </p>
+            <p>
+                The core problem is uncertainty during the <strong>replenishment lead time</strong>. If a customer order arrives while we are waiting for our replenishment, we risk a stockout. We buffer against this risk using <strong>Safety Stock (SS)</strong>.
+            </p>
+            
+            <h3>1.1 Modeling Demand During Lead Time (DDLT)</h3>
+            <p>
+                We must model the demand that occurs during the replenishment lead time. Let:
+            </p>
+            <ul>
+                <li>$L$ = Replenishment lead time (assumed constant for now, in periods)</li>
+                <li>$d$ = Average demand per period (e.g., per week)</li>
+                <li>$\sigma_d$ = Standard deviation of demand per period</li>
+                <li>$\mu_{DDLT}$ = Average (mean) demand during lead time</li>
+                <li>$\sigma_{DDLT}$ = Standard deviation of demand during lead time</li>
+            </ul>
+            <p>
+                If demand in each period is independent and identically distributed (i.i.d.), the parameters for DDLT are:
+            </p>
+            <blockquote>
+                <p>$$\mu_{DDLT} = d \times L$$</p>
+                <p>$$\sigma_{DDLT} = \sigma_d \times \sqrt{L}$$</p>
+            </blockquote>
+            <p>
+                This "square-root of L" relationship is fundamental. It holds that variability (risk) does not scale linearly with time, but with the square root of time.
+            </p>
+
+            <h3>1.2 Service Level Metrics: The Ph.D. Distinction</h3>
+            <p>
+                How much safety stock should we hold? This depends on our desired service level. At a graduate level, it is <em>critical</em> to distinguish between the two primary types of service metrics.
+            </p>
+            
+            <h4>Type 1: Cycle Service Level (CSL)</h4>
+            <p>Also known as the "Alpha ($\alpha$) Service Level".</p>
+            <ul>
+                <li><strong>Definition:</strong> The probability of <em>not</em> stocking out in any given replenishment cycle.</li>
+                <li><strong>Example:</strong> A 95% CSL means that 95 out of 100 replenishment cycles will be completed without any customer backorders.</li>
+                <li><strong>Focus:</strong> Frequency of stockout events.</li>
+            </ul>
+
+            <h4>Type 2: Fill Rate (FR)</h4>
+            <p>Also known as the "Beta ($\beta$) Service Level".</p>
+            <ul>
+                <li><strong>Definition:</strong> The fraction of total demand that is satisfied directly from stock (i.e., not backordered or lost).</li>
+                <li><strong>Example:</strong> A 99% Fill Rate means that 99 out of every 100 units demanded are shipped immediately.</li>
+                <li><strong>Focus:</strong> Magnitude (volume) of stockout events.</li>
+            </ul>
+            <div class="callout" style="background-color: #fffbeb; border-color: #fde68a;">
+                <h4 style="color: #b45309; font-weight: bold;">Why the distinction matters:</h4>
+                <p>A 95% CSL is <em>much</em> less expensive to provide than a 95% Fill Rate. The CSL allows for a (rare) stockout to be catastrophically large, whereas the Fill Rate explicitly limits the <em>total volume</em> of shortage. Most managers <em>say*</em> CSL ("I want to avoid stockouts") but <em>mean*</em> FR ("I want to ship almost all my orders").</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Continuous Review $(Q, R)$ Policy</h2>
+            <p>
+                This is the most common stochastic inventory policy, also known as a "fixed order quantity" or "two-bin" system.
+            </p>
+            <div class="callout">
+                <h4>The $(Q, R)$ Policy</h4>
+                <p><strong>Monitor</strong> the <strong>Inventory Position (IP)</strong> continuously.
+                <br>
+                When $IP \le R$ (the Reorder Point), <strong>place an order</strong> for a fixed quantity $Q$.
+                </p>
+                <p><strong>Inventory Position (IP)</strong> = (On-hand Inventory) + (On-order Inventory) - (Backorders)</p>
+            </div>
+
+            <h3>2.1 Finding $(Q, R)$ for a target CSL</h3>
+            <p>
+                This is the simpler case. The two parameters $Q$ and $R$ can be found (almost) independently.
+            </p>
+            <h4>Step 1: Calculate $Q$</h4>
+            <p>We use the standard $Q^*_0 = \sqrt{2DK/h}$ from Module 1.1. This is an approximation (as the stockout cost is not included), but it is the standard method.</p>
+            
+            <h4>Step 2: Calculate $R$ for target CSL</h4>
+            <p>We want the probability of DDLT being less than or equal to $R$ to be our CSL.
+            $$CSL = P(DDLT \le R)$$</p>
+            <p>Assuming DDLT is Normal($\mu_{DDLT}, \sigma_{DDLT}$), we standardize. The $z$-score is the number of standard deviations we need:</p>
+            <blockquote>
+                <p>$$CSL = P \left( Z \le \frac{R - \mu_{DDLT}}{\sigma_{DDLT}} \right)$$</p>
+                <p>Let $z = \Phi^{-1}(CSL)$ (i.e., the inverse standard normal of the CSL, or `NORM.S.INV(CSL)`).</p>
+            </blockquote>
+            <p>This gives us the formula for $R$:</p>
+            <div class="callout">
+                $$R = \mu_{DDLT} + z \cdot \sigma_{DDLT}$$
+                <br>
+                Where <strong>Safety Stock (SS) = $z \cdot \sigma_{DDLT}$</strong>
+            </div>
+
+            <h3>2.2 Finding $(Q, R)$ for a target Fill Rate (FR)</h3>
+            <p>
+                This is significantly more complex, as $Q$ and $R$ are now interdependent. The expected shortage in a cycle depends on $R$, and the annual cost impact of that shortage depends on how many cycles there are (which depends on $Q$).
+            </p>
+            <p>
+                We define $E(S \text{ per cycle})$ as the Expected Shortage per Replenishment Cycle. This is the average number of units we are short by, *given that a stockout occurs*, times the probability of a stockout.
+            </p>
+            <p>
+                For a Normal distribution, this is given by the <strong>Standard Normal Loss Function, $G(z)$</strong>.
+            </p>
+            <blockquote>
+                <p>$$E(S \text{ per cycle}) = \sigma_{DDLT} \cdot G(z) \quad \text{where } z = \frac{R - \mu_{DDLT}}{\sigma_{DDLT}}$$</p>
+                <p>$$G(z) = \phi(z) - z(1 - \Phi(z))$$</p>
+            </blockquote>
+            <p>
+                The Fill Rate is $FR = 1 - \frac{\text{Annual Shortage}}{\text{Annual Demand}} = 1 - \frac{E(S \text{ per cycle}) \times (\text{Cycles per year})}{D}$.
+                Since Cycles per year = $D/Q$, we get:
+            </p>
+            <blockquote>
+                <p>$$FR = 1 - \frac{E(S \text{ per cycle})}{Q} = 1 - \frac{\sigma_{DDLT} \cdot G(z)}{Q}$$</p>
+            </blockquote>
+            <p>
+                This gives us an equation that links $Q$ and $z$ (and thus $R$):
+            </p>
+            <div class="callout">
+                $$G(z) = \frac{Q (1 - FR)}{\sigma_{DDLT}}$$
+            </div>
+            <p>
+                This requires an iterative procedure to find the *simultaneously optimal* $(Q, R)$ if a shortage cost $p$ ($/unit) is known. However, if $FR$ is a constraint, the standard procedure is:
+            </p>
+            <ol>
+                <li>Calculate $Q = EOQ$.</li>
+                <li>Using this $Q$, calculate the required $G(z) = \frac{Q (1 - FR)}{\sigma_{DDLT}}$.</li>
+                <li>Find $z$ from $G(z)$ (using a table or formula).</li>
+                <li>Calculate $R = \mu_{DDLT} + z \cdot \sigma_{DDLT}$.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>3. Periodic Review $(P, S)$ Policy</h2>
+            <p>
+                This is the alternative to continuous review, also known as a "fixed order interval" or "order-up-to" system.
+            </p>
+            <div class="callout">
+                <h4>The $(P, S)$ Policy</h4>
+                <p>
+                    <strong>Review</strong> the Inventory Position (IP) at fixed, periodic intervals of $P$.
+                    <br>
+                    <strong>Place an order</strong> for a variable quantity $Q = S - IP$, where $S$ is the "Order-Up-To Level".
+                </p>
+            </div>
+            
+            <p>
+                The key difference here is the <strong>risk period</strong>. In a $(Q, R)$ policy, you are only vulnerable during the lead time $L$. In a $(P, S)$ policy, you place an order and are then vulnerable for the <em>entire time*</em> until the <em>next*</em> order arrives, which is $P + L$.
+            </p>
+            
+            <h3>Deriving the Order-Up-To Level ($S$)</h3>
+            <p>
+                We must set $S$ high enough to cover all demand during the risk period ($P+L$) to achieve our desired CSL.
+            </p>
+            <blockquote>
+                <p>$$\mu_{P+L} = d \times (P+L)$$</p>
+                <p>$$\sigma_{P+L} = \sigma_d \times \sqrt{P+L}$$</p>
+            </blockquote>
+            <p>To achieve a target CSL, we find $z = \Phi^{-1}(CSL)$ as before.</p>
+            <div class="callout">
+                $$S = \mu_{P+L} + z \cdot \sigma_{P+L}$$
+            </div>
+            <p>
+                The safety stock is $SS = z \cdot \sigma_{P+L}$. Since $\sqrt{P+L} > \sqrt{L}$, a periodic review policy will <em>always</em> carry more safety stock than a continuous review policy for the same CSL, assuming all else is equal.
+            </p>
+        </section>
+
+        <section>
+            <h2>4. Ph.D. Level Analysis: Distribution-Free Models</h2>
+            
+            <h3>Scarf's Rule (1958)</h3>
+            <p>
+                A major assumption in our models is that DDLT is *Normally* distributed. What if it isn't? What if we only know its mean ($\mu$) and standard deviation ($\sigma$)?
+            </p>
+            <p>
+                Herbert Scarf (1958) tackled this using a <strong>min-max</strong> approach: find the policy that minimizes the maximum possible cost, over all possible (unimodal) distributions with that $\mu$ and $\sigma$.
+            </p>
+            <p>
+                This is effectively a Newsvendor problem (Module 1.4) where the distribution is unknown. Scarf proved that the min-max optimal stock level $R^*$ is the solution to:
+            </p>
+            <blockquote>
+                <p>$$R^* = \mu + \frac{\sigma}{2} \left( \sqrt{\frac{p}{h}} - \sqrt{\frac{h}{p}} \right)$$</p>
+                <small>(Where $p$ is unit shortage cost and $h$ is unit holding cost)</small>
+            </blockquote>
+            <p>
+                The key insight is that this robust, distribution-free policy requires holding safety stock ($R^* - \mu$) that is <em>linearly*</em> proportional to the standard deviation ($\sigma$), not a multiple ($z$) of it. This provides a crucial benchmark for high-uncertainty, low-information environments.
+            </p>
+        </section>
+
+        <section>
+            <h2>Workshop: Service-Level Experimentation</h2>
+            <ol class="resource-list">
+                <li>Using a provided dataset, derive the empirical $\mu_{DDLT}$ and $\sigma_{DDLT}$.</li>
+                <li>Compute the required Safety Stock and Reorder Point $R$ for CSL targets of 90%, 95%, and 99%.</li>
+                <li>Using the $Q=EOQ$, compute the *implied* Fill Rate (FR) for each of those CSLs.</li>
+                <li>Now compute the Safety Stock and $R$ required for FR targets of 90%, 95%, and 99%.</li>
+                <li>Present a memo comparing the inventory cost of a 99% CSL vs. a 99% FR.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Review models for <strong>stochastic lead times</strong> (i.e., $L$ is a random variable). How is the $\sigma_{DDLT}$ formulated when *both* demand and lead time are stochastic? (Hint: See Song & Zipkin, 1996).
+            </div>
+        </section>
+
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-ss">
+                <div classd="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                        <strong>Data for all questions:</strong>
+                        <ul>
+                            <li>Average weekly demand ($d$): 50 units</li>
+                            <li>Std. dev. of weekly demand ($\sigma_d$): 10 units</li>
+                            <li>Lead time ($L$): 4 weeks (constant)</li>
+                            <li>Review period ($P$): 2 weeks (for Q2)</li>
+                            <li>Target CSL: 95% (which corresponds to $z \approx 1.645$)</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Question 1.</strong> For a continuous $(Q, R)$ policy, what is the correct Reorder Point ($R$) to achieve the 95% CSL?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">$R \approx 200$ units</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">$R \approx 216$ units</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">$R \approx 233$ units</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> For a periodic $(P, S)$ policy with $P=2$ weeks, what is the correct Order-Up-To Level ($S$) to achieve the 95% CSL?</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">$S \approx 300$ units</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">$S \approx 325$ units</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">$S \approx 340$ units</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> Why is the safety stock for the $(P, S)$ policy in Q2 higher than the safety stock for the $(Q, R)$ policy in Q1?</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">Because the $(P, S)$ policy has a longer *risk period* ($P+L$) to cover.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">Because the $z$-score for $(P, S)$ is always higher than for $(Q, R)$.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">Because periodic review is less efficient, so it must order more.</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-ss-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Hadley, G., & Whitin, T. M. (1963). <em>Analysis of Inventory Systems</em>. Prentice-Hall. (The "bible" for these derivations).</li>
+                <li>Scarf, H. (1958). "A min-max solution of an inventory problem." In K. Arrow, S. Karlin, & H. Scarf (Eds.), *Studies in the mathematical theory of inventory and production*. Stanford University Press.</li>
+                <li>Zipkin, P. (2000). *Foundations of Inventory Management*. McGraw-Hill.</li>
+                <li>Song, J.-S., & Zipkin, P. (1996). Managing inventory with the lost-sales concept. *Operations Research*, 44(5), 836–846.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Document how safety stock insights alter your EOQ-derived cycle policies.
+    </footer>
+
+    <script>
+        document.getElementById('quiz-ss').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'c',
+                q2: 'c',
+                q3: 'a'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> <br/> $\\mu_{DDLT} = d \\times L = 50 \\times 4 = 200$. <br/> $\\sigma_{DDLT} = \\sigma_d \\times \\sqrt{L} = 10 \\times \\sqrt{4} = 20$. <br/> $R = \\mu_{DDLT} + z \\cdot \\sigma_{DDLT} = 200 + 1.645 \\times 20 = 200 + 32.9 \\approx 233$.</li>';
+            } else {
+                let error = "Check your $\\mu_{DDLT}$ and $\\sigma_{DDLT}$ calculations.";
+                if (userAnswers.q1 === 'a') error = "$R=200$ only covers the average demand, giving a 50% CSL.";
+                if (userAnswers.q1 === 'b') error = "$R=216$ might use $z=1.6$ or a miscalculated $\\sigma$.";
+                feedbackHtml += `<li style="color: red;"><strong>Question 1: Incorrect.</strong> ${error}</li>`;
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> <br/> Risk Period $P+L = 2 + 4 = 6$ weeks. <br/> $\\mu_{P+L} = d \\times (P+L) = 50 \\times 6 = 300$. <br/> $\\sigma_{P+L} = \\sigma_d \\times \\sqrt{P+L} = 10 \\times \\sqrt{6} \\approx 24.5$. <br/> $S = \\mu_{P+L} + z \\cdot \\sigma_{P+L} = 300 + 1.645 \\times 24.5 = 300 + 40.3 \\approx 340$.</li>';
+            } else {
+                let error = "Check your Risk Period calculation.";
+                if (userAnswers.q2 === 'a') error = "$S=300$ only covers the average demand, giving a 50% CSL.";
+                if (userAnswers.q2 === 'b') error = "$S=325$ is close, but check your $\\sigma_{P+L}$ or $z$-score.";
+                feedbackHtml += `<li style="color: red;"><strong>Question 2: Incorrect.</strong> ${error}</li>`;
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> The $(Q, R)$ policy only needs to cover the risk of a stockout during $L$. The $(P, S)$ policy must cover the risk during $P$ *plus* $L$, which is a longer, and thus more variable, period.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> The $z$-score (a) is the same for the same CSL. The core issue is the length of the risk period.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-ss-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
