@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="text-base leading-relaxed">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Module 1.1: Economic Order Quantity (EOQ)</title>
+    <!-- 1. CODE FIX: Added Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. CODE FIX: Added MathJax via CDN for professional formula rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- 3. CODE FIX: Added inline styles for consistency (based on our previous files) -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Georgia', serif; font-weight: 600; }
+        .latex { font-family: 'Latin Modern Math', 'CMU Serif', serif; }
+        .formula {
+            @apply bg-gray-100 p-4 rounded-lg my-4 text-center text-lg overflow-x-auto;
+        }
+        .derivation-step {
+            @apply p-4 border-l-4 border-blue-600 bg-blue-50 rounded-r-lg my-3;
+        }
+        .assumption-box {
+            @apply border border-red-300 bg-red-50 p-4 rounded-lg my-4;
+        }
+        .quiz-question {
+            @apply bg-gray-50 border border-gray-200 p-6 rounded-lg mb-6;
+        }
+        .quiz-feedback {
+            @apply mt-4 p-4 rounded-md text-sm;
+        }
+        .quiz-correct-summary {
+            @apply bg-green-100 border border-green-300 text-green-800;
+        }
+        .quiz-incorrect-summary {
+            @apply bg-red-100 border border-red-300 text-red-800;
+        }
+        .quiz-correct {
+            @apply text-green-700 font-semibold;
+        }
+        .quiz-incorrect {
+            @apply text-red-700 font-semibold;
+        }
+        .resource-list {
+            @apply list-disc list-inside space-y-2;
+        }
+        .callout {
+            @apply bg-blue-50 border border-blue-200 p-4 rounded-lg text-blue-800;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 max-w-7xl mx-auto p-4 md:p-8">
+
+    <!-- Header and Nav, re-styled with Tailwind -->
+    <header class="pb-6 border-b border-gray-200">
+        <h1 class="text-5xl font-bold text-blue-900 mb-2">Module 1.1: Economic Order Quantity (EOQ)</h1>
+        <p class="text-xl text-gray-600">
+            Formal derivation of the classical EOQ model, its extensions, and research
+            prompts for doctoral-level inquiry.
+        </p>
+        <nav class="mt-4 text-sm font-medium space-x-2">
+            <a href="overview.html" class="text-blue-600 hover:underline">Part 1 Overview</a>
+            <span class="text-gray-400">&bull;</span>
+            <a href="safety_stock.html" class="text-gray-600 hover:text-blue-600 hover:underline">Next: Safety Stock</a>
+            <a href="dynamic_demand.html" class="text-gray-600 hover:text-blue-600 hover:underline ml-2">Lot Sizing</a>
+            <a href="newsvendor.html" class="text-gray-600 hover:text-blue-600 hover:underline ml-2">Newsvendor</a>
+        </nav>
+    </header>
+
+    <main class="mt-8">
+        <div class="text-sm text-gray-500 mb-6">
+            <a href="../index.html" class="text-blue-500 hover:underline">Home</a> &rsaquo; 
+            <a href="overview.html" class="text-blue-500 hover:underline">Part 1</a> &rsaquo; 
+            <span class="text-gray-700">EOQ</span>
+        </div>
+
+        <!-- 
+          CONTENT ADDITION: 
+          This "Theory Essentials" section is massively expanded from your
+          original paragraph to include the full Ph.D.-level derivations.
+        -->
+        <section>
+            <h2 class="text-4xl font-semibold text-gray-800 mb-4">1. Theory Essentials: Derivation & Analysis</h2>
+            <div class="text-lg text-gray-600 border-b pb-4 mb-4">
+                <span class="font-semibold text-gray-800">Duration:</span> 45 minutes
+                <span class="mx-3">|</span>
+                <span class="font-semibold text-gray-800">Core References:</span> Harris (1913); Wilson (1934)
+            </div>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                The Economic Order Quantity (EOQ) model is the foundation of modern inventory control. Its value is not in its perfect reflection of reality—it is a significant oversimplification. Its value lies in its elegant mathematical formulation of the central tradeoff in inventory management:
+            </p>
+            <ul class="list-disc list-inside text-lg text-gray-700 space-y-2 mb-6">
+                <li><strong class="text-blue-700">Cost of Ordering:</strong> Placing many small orders incurs high fixed setup costs.</li>
+                <li><strong class="text-red-700">Cost of Holding:</strong> Placing one large order minimizes setup costs but incurs high holding costs (capital, storage, obsolescence).</li>
+            </ul>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                The EOQ finds the precise quantity $Q^*$ that minimizes the total cost function.
+            </p>
+
+            <h3 class="text-3xl font-semibold text-gray-800 mt-8 mb-4">1.1 Notation</h3>
+            <p class="text-lg text-gray-700 mb-4">
+                We define the following parameters:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$D$</strong> = Annual demand (units/year)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$K$</strong> = Fixed ordering cost per order ($/order)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$h$</strong> = Annual holding cost per unit ($/unit/year)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$c$</strong> = Unit purchase cost ($/unit)</div>
+            </div>
+            <p class="text-lg text-gray-700 mt-4">
+                Often, $h$ is expressed as a fraction $i$ of the unit's value: $h = i \times c$.
+            </p>
+
+            <h3 class="text-3xl font-semibold text-gray-800 mt-8 mb-4">1.2 Calculus-Based Derivation</h3>
+            <p class="text-lg text-gray-700 mb-4">
+                We build a function for the Total Annual Relevant Cost, $TRC(Q)$, and find the $Q$ that minimizes it.
+            </p>
+
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">Step 1: Define Total Annual Ordering Cost</h4>
+                <p>Number of orders per year = $D/Q$.</p>
+                <p>Total Annual Ordering Cost = (Number of orders) $\times$ (Cost per order) = $\frac{D}{Q} K$</p>
+            </div>
+
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">Step 2: Define Total Annual Holding Cost</h4>
+                <p>The inventory level follows a sawtooth pattern from $Q$ to 0. The average inventory level is $\frac{Q}{2}$.</p>
+                <p>Total Annual Holding Cost = (Average inventory) $\times$ (Holding cost per unit/year) = $\frac{Q}{2} h$</p>
+            </div>
+
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">Step 3: Define Total Annual Relevant Cost (TRC)</h4>
+                <p>The total annual purchase cost ($D \times c$) is constant (assuming no discounts) and can be ignored for optimization. The $TRC$ is:</p>
+                <div class="formula">
+                    $$TRC(Q) = \frac{DK}{Q} + \frac{Qh}{2}$$
+                </div>
+            </div>
+
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">Step 4: Find the Minimum (First Derivative)</h4>
+                <p>Set the first derivative with respect to $Q$ to zero.</p>
+                <div class="formula">
+                    $$\frac{d}{dQ}TRC(Q) = \frac{d}{dQ} \left( DK Q^{-1} + \frac{h}{2} Q \right) = - \frac{DK}{Q^2} + \frac{h}{2}$$
+                    $$- \frac{DK}{Q^2} + \frac{h}{2} = 0 \quad \Rightarrow \quad Q^2 = \frac{2DK}{h}$$
+                </div>
+                <p>This gives the optimal $Q$, which we call $Q^*_0$ (the classic EOQ):</p>
+                <div class="formula" style="background-color: #fefcbf;">
+                    $$Q^*_0 = \sqrt{\frac{2DK}{h}}$$
+                </div>
+            </div>
+
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">Step 5: Confirm Convexity (Second Derivative)</h4>
+                <p>We confirm this is a minimum by checking the second derivative:</p>
+                <div class="formula">
+                    $$\frac{d^2}{dQ^2}TRC(Q) = \frac{d}{dQ} \left( -DK Q^{-2} + \frac{h}{2} \right) = \frac{2DK}{Q^3}$$
+                </div>
+                <p>Since $D$, $K$, and $Q$ are all positive, $\frac{2DK}{Q^3} > 0$. The cost function is convex, and $Q^*$ is the unique global minimum.</p>
+            </div>
+        </section>
+
+        <section class="mt-12">
+            <h2 class="text-4xl font-semibold text-gray-800 mb-4">2. Ph.D. Level Analysis: Assumptions & Robustness</h2>
+            
+            <h3 class="text-3xl font-semibold text-gray-800 mt-8 mb-4">2.1 Core Assumptions</h3>
+            <p class="text-lg text-gray-700 mb-4">The model's simplicity relies on a strict set of assumptions. Violating them is the basis for all advanced inventory theory.</p>
+            
+            <div class="assumption-box">
+                <h4 class="text-xl font-semibold text-red-800 mb-2">Key Assumptions</h4>
+                <ul class="list-disc list-inside text-red-900 space-y-1">
+                    <li><strong>Demand:</strong> Deterministic, constant, and continuous. (Violated by stochasticity $\rightarrow$ Safety Stock, Module 1.2)</li>
+                    <li><strong>Replenishment:</strong> Instantaneous (Lead time = 0). (Violated $\rightarrow$ Reorder Points)</li>
+                    <li><strong>Costs:</strong> Known, fixed, and stationary. (Violated $\rightarrow$ Quantity Discounts, Dynamic Models)</li>
+                    <li><strong>Horizon:</strong> Infinite and stationary. (Violated by non-stationary demand $\rightarrow$ Lot Sizing, Module 1.3)</li>
+                    <li><strong>Constraints:</strong> No backorders, no capacity limits. (Violated $\rightarrow$ Backorder Models, Newsvendor)</li>
+                </ul>
+            </div>
+
+            <h3 class="text-3xl font-semibold text-gray-800 mt-8 mb-4">2.2 Mathematical Proof of Robustness</h3>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                The EOQ model's most powerful feature is its robustness to parameter errors. The total cost curve is "flat" around the optimum $Q^*$.
+            </p>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                Let's define a cost penalty ratio $\frac{TRC(Q')}{TRC(Q^*)}$ where $Q'$ is a non-optimal quantity ($Q' = \beta Q^*$).
+            </p>
+            <div class="formula">
+                $$TRC(Q') = \frac{DK}{Q'} + \frac{Q'h}{2} = \frac{DK}{\beta Q^*} + \frac{\beta Q^* h}{2}$$
+            </div>
+            <p class="text-lg text-gray-700 leading-relaxed my-4">
+                At the optimum $Q^*$, we know $TRC(Q^*) = \sqrt{2DKh}$. More usefully, we know the ordering and holding costs are equal: $\frac{DK}{Q^*} = \frac{Q^*h}{2} = \frac{TRC(Q^*)}{2}$.
+            </p>
+            <p class="text-lg text-gray-700 leading-relaxed my-4">
+                Substitute these into the $TRC(Q')$ equation:
+            </p>
+            <div class="formula">
+                $$TRC(Q') = \frac{1}{\beta} \left( \frac{DK}{Q^*} \right) + \beta \left( \frac{Q^* h}{2} \right) = \frac{1}{\beta} \left( \frac{TRC(Q^*)}{2} \right) + \beta \left( \frac{TRC(Q^*)}{2} \right)$$
+            </div>
+            <p class="text-lg text-gray-700 leading-relaxed my-4">
+                This gives the famous robustness formula:
+            </p>
+            <div class="formula" style="background-color: #fefcbf;">
+                $$\frac{TRC(Q')}{TRC(Q^*)} = \frac{1}{2} \left( \frac{1}{\beta} + \beta \right)$$
+            </div>
+            <p class="text-lg text-gray-700 leading-relaxed my-4">
+                <strong>Example:</strong> If your estimate for $K$ is 50% too high, your $Q'$ will be $\sqrt{1.5} \approx 1.22$ times $Q^*$ (so $\beta=1.22$). Your cost penalty is $\frac{1}{2}(\frac{1}{1.22} + 1.22) = 1.02$.
+                A 50% parameter error leads to only a **2% cost penalty**.
+            </p>
+        </section>
+
+        <!-- 
+          CONTENT ADDITION: 
+          This section on Model Extensions is entirely new,
+          providing the Ph.D.-level detail you requested.
+        -->
+        <section class="mt-12">
+            <h2 class="text-4xl font-semibold text-gray-800 mb-4">3. Key Model Extensions</h2>
+            
+            <h3 class="text-3xl font-semibold text-gray-800 mt-8 mb-4">3.1 EOQ with Planned Shortages (Backorders)</h3>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                We relax the "no stockouts" assumption, incurring a backorder cost $b$ per unit per year. Let $S$ be the maximum inventory level and $Q$ the order quantity, so $(Q-S)$ is the maximum backorder level.
+            </p>
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">New Cost Function $TRC(Q, S)$</h4>
+                <p>The Annual Holding Cost becomes $\frac{S^2 h}{2Q}$.</p>
+                <p>The Annual Shortage Cost is $\frac{(Q-S)^2 b}{2Q}$.</p>
+                <div class="formula">
+                    $$TRC(Q, S) = \frac{DK}{Q} + \frac{S^2 h}{2Q} + \frac{(Q-S)^2 b}{2Q}$$
+                </div>
+            </div>
+            <div class="derivation-step">
+                <h4 class="text-xl font-semibold mb-2">Optimal Solution (Partial Derivatives)</h4>
+                <p>Taking $\frac{\partial TRC}{\partial S} = 0$ gives the optimal $S^*$ in terms of $Q$:</p>
+                <div class="formula">
+                    $$S^* = Q \left( \frac{b}{h+b} \right)$$
+                </div>
+                <p>Plugging this $S^*$ back in and taking $\frac{dTRC}{dQ} = 0$ yields the optimal $Q^*_b$:</p>
+                <div class="formula" style="background-color: #fefcbf;">
+                    $$Q^*_b = \sqrt{\frac{2DK}{h}} \sqrt{\frac{h+b}{b}}$$
+                </div>
+            </div>
+
+            <h3 class="text-3xl font-semibold text-gray-800 mt-8 mb-4">3.2 EOQ with All-Units Quantity Discounts</h3>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                Here, the unit cost $c_j$ decreases at price break $q_j$. This is complex because $h = i \times c_j$ and the total purchase cost $D c_j$ must be included.
+            </p>
+            <div class="formula">
+                $$TAC_j(Q) = \frac{DK}{Q} + \frac{Q(i c_j)}{2} + D c_j$$
+            </div>
+            <p class="text-lg text-gray-700 leading-relaxed mb-4">
+                This creates a set of discontinuous cost curves. The optimal solution is found via the following algorithm:
+            </p>
+            <ol class="list-decimal list-inside text-lg text-gray-700 space-y-3 bg-gray-50 p-6 rounded-lg">
+                <li>Start with the <strong>lowest price $c_m$</strong>. Calculate its $Q^*_m = \sqrt{2DK / (i c_m)}$.</li>
+                <li><strong>If $Q^*_m$ is feasible</strong> (i.e., $Q^*_m \ge q_m$): This $Q^*_m$ is a candidate. Calculate $TAC_m(Q^*_m)$.</li>
+                <li><strong>If $Q^*_m$ is not feasible</strong> (i.e., $Q^*_m < q_m$): The best cost for this price level is at $q_m$. $q_m$ is a candidate. Calculate $TAC_m(q_m)$.</li>
+                <li>Repeat for all other price levels $j < m$.
+                <li>The optimal order quantity is the **candidate $Q$ (either a $Q^*_j$ or a $q_j$) with the minimum Total Annual Cost ($TAC$)**.</li>
+            </ol>
+        </section>
+
+        <!-- 
+          Your original "Workshop" section, now re-styled with Tailwind.
+          The content is identical.
+        -->
+        <section class="mt-12">
+            <h2 class="text-4xl font-semibold text-gray-800 mb-4">Workshop: EOQ Calibration and Sensitivity</h2>
+            <ol class="resource-list text-lg text-gray-700">
+                <li>Estimate annual demand and holding cost from your research dataset.</li>
+                <li>Compute EOQ, reorder cycle, and average inventory; document assumptions.</li>
+                <li>Perform one-way sensitivity on <em>K</em>, <em>D</em>, and <em>h</em> and visualize the cost surface.</li>
+                <li>Debate the validity of the deterministic assumption for your context.</li>
+            </ol>
+            <div class="callout mt-6 text-lg">
+                <strong>Research prompt:</strong> Identify at least two papers extending EOQ to
+                data-driven or stochastic environments (e.g., Chen et al., 2013). Summarize
+                estimation techniques and discuss integration with your workshop findings.
+            </div>
+        </section>
+
+        <!-- 
+          CODE FIX: 
+          Your quiz HTML has been rewritten to be valid and accessible.
+          The logic is now handled by an embedded script.
+        -->
+        <section class="mt-12">
+            <h2 class="text-4xl font-semibold text-gray-800 mb-4">Quiz: Check Your Understanding</h2>
+            <form id="quiz-eoq">
+                <div class="quiz-question">
+                    <p class="text-lg font-semibold mb-3">Question 1. The primary goal of the classical EOQ model is to:</p>
+                    <div class="space-y-2">
+                        <div>
+                            <input type="radio" name="q1" id="q1a" value="a" class="mr-2">
+                            <label for="q1a" class="text-lg">Minimize the unit purchase price.</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="q1" id="q1b" value="b" class="mr-2">
+                            <label for="q1b" class="text-lg">Balance ordering and holding costs per unit time.</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="q1" id="q1c" value="c" class="mr-2">
+                            <label for="q1c" class="text-lg">Maximize the order frequency to reduce stockouts.</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-question">
+                    <p class="text-lg font-semibold mb-3">Question 2. The EOQ closed-form solution $Q^* = \sqrt{2DK/h}$ assumes:</p>
+                     <div class="space-y-2">
+                        <div>
+                            <input type="radio" name="q2" id="q2a" value="a" class="mr-2">
+                            <label for="q2a" class="text-lg">Deterministic, stationary demand and instantaneous replenishment.</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="q2" id="q2b" value="b" class="mr-2">
+                            <label for="q2b" class="text-lg">Time-varying stochastic demand.</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="q2" id="q2c" value="c" class="mr-2">
+                            <label for="q2c" class="text-lg">Capacity constraints are binding at each cycle.</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p class="text-lg font-semibold mb-3">Question 3. The robustness of the EOQ model implies that:</p>
+                     <div class="space-y-2">
+                        <div>
+                            <input type="radio" name="q3" id="q3a" value="a" class="mr-2">
+                            <label for="q3a" class="text-lg">A 20% error in $h$ will lead to a 20% error in total cost.</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="q3" id="q3b" value="b" class="mr-2">
+                            <label for="q3b" class="text-lg">The total cost function is highly sensitive to the demand estimate $D$.</label>
+                        </div>
+                        <div>
+                            <input type="radio" name="q3" id="q3c" value="c" class="mr-2">
+                            <label for="q3c" class="text-lg">A large error in estimating parameters (like $K$ or $h$) leads to a relatively small error in total cost.</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 px-6 bg-blue-600 text-white font-bold text-lg rounded-lg shadow-md hover:bg-blue-700 transition-colors">Submit Answers</button>
+                <div id="quiz-eoq-result" class="quiz-feedback mt-4" style="display: none;"></div>
+            </form>
+        </section>
+
+        <!-- 
+          Your original "Key References" section, re-styled.
+          The content is identical.
+        -->
+        <section class="mt-12">
+            <h2 class="text-4xl font-semibold text-gray-800 mb-4">Key References</h2>
+            <ul class="resource-list text-lg text-gray-700">
+                <li>Harris, F. W. (1913). <em>How many parts to make at once</em>. Factory, The Magazine of Management, 10(2), 135–136.</li>
+                <li>Wilson, R. H. (1934). <em>A scientific routine for stock control</em>. Harvard Business Review, 13(1), 116–128.</li>
+                <li>Hadley, G., & Whitin, T. M. (1963). <em>Analysis of Inventory Systems</em>. Prentice-Hall.</li>
+                <li>Chen, L., Li, Y., & Mu, X. (2013). Data-driven EOQ under demand uncertainty. <em>International Journal of Production Economics</em>, 145(1), 87–95.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="mt-12 pt-6 border-t border-gray-200 text-center text-gray-500">
+        <p>Reflect on how EOQ informs the advanced policies studied in Part 2.</p>
+        <p class="mt-2 text-sm">&copy; 2025 Inventory Management Academy</p>
+    </footer>
+
+    <!-- 
+      CODE FIX: 
+      Embedded JavaScript to handle the quiz logic.
+      This replaces the external 'quiz.js' file.
+    -->
+    <script>
+        document.getElementById('quiz-eoq').addEventListener('submit', function(event) {
+            // Stop the form from submitting the old-fashioned way
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'c'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li class="quiz-correct"><strong>Question 1: Correct.</strong> The EOQ finds the minimum cost by balancing the tradeoff between fixed ordering costs and variable holding costs.</li>';
+            } else {
+                feedbackHtml += '<li class="quiz-incorrect"><strong>Question 1: Incorrect.</strong> The classical EOQ model assumes purchase price is constant. It minimizes the sum of ordering and holding costs, not price.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li class="quiz-correct"><strong>Question 2: Correct.</strong> These are two of the most critical (and most frequently violated) assumptions of the basic model.</li>';
+            } else {
+                feedbackHtml += '<li class="quiz-incorrect"><strong>Question 2: Incorrect.</strong> Stochastic demand or capacity constraints require more advanced models (like Safety Stock or EPQ). The basic EOQ assumes these away.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li class="quiz-correct"><strong>Question 3: Correct.</strong> This is the "robustness" of the model. The cost curve is "flat" around the optimum, so $Q$ changes with the square root of parameters, and total cost changes even more slowly.</li>';
+            } else {
+                feedbackHtml += '<li class="quiz-incorrect"><strong>Question 3: Incorrect.</strong> This describes a *sensitive* model, which the EOQ is not. Because of the square root, a 20% error in a parameter (like $h$) leads to a much *smaller* error in total cost.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-eoq-result');
+            
+            // Add summary header
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 class="text-xl font-bold mb-2">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.className = 'quiz-feedback quiz-correct-summary';
+            } else {
+                resultDiv.innerHTML = `<h4 class="text-xl font-bold mb-2">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.className = 'quiz-feedback quiz-incorrect-summary';
+            }
+
+            resultDiv.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
