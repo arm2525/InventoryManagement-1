@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Future Research & Capstone</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template for Part 3.
+      Note: You may want to update the nav on other pages to link here.
+    -->
+    <header>
+        <h1>Future Research & Capstone</h1>
+        <p>Synthesizing the course and developing a framework for new, original research contributions.</p>
+        <nav>
+            <a href="overview.html">Part 3 Overview</a>
+            <a href="classics.html">Classical Foundations</a>
+            <a href="new_frontier.html">Frontier Directions</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 3</a> &rsaquo; 
+            Future Research
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is a Ph.D.-level capstone, framing the
+          course as a launchpad for original research.
+        -->
+        <section>
+            <h2>Course Synthesis: The Evolution of the "Problem"</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.5 Hours</span>
+                <span>References: All course materials</span>
+            </div>
+            <p>
+                We have completed a 10.5-hour journey through a century of research. The single most important takeaway for a Ph.D. student is this: the field of inventory management is not a static set of solved problems, but a dynamic, evolving conversation.
+            </p>
+            <p>
+                We have seen the "problem" of inventory evolve:
+            </p>
+            <ul>
+                <li><strong>1910s (Harris):</strong> The problem is *economic*. (Minimizing a known cost).</li>
+                <li><strong>1960s (Scarf):</strong> The problem is *mathematical*. (Proving optimality in a stochastic world).</li>
+                <li><strong>1990s (Lee):</strong> The problem is *informational*. (Fixing the distortion of information).</li>
+                <li><strong>2000s (Cachon):</strong> The problem is *incentive-based*. (Fixing the misaligned goals of rational agents).</li>
+                <li><strong>2020s (You):</strong> The problem is *behavioral, sustainable, resilient, and data-driven*.</li>
+            </ul>
+            <p>
+                The final step in this course is for you to join this conversation. This is done by writing a research paper.
+            </p>
+        </section>
+
+        <section>
+            <h2>The Anatomy of a Research Contribution</h2>
+            <p>
+                Your final workshop is to develop a proposal for an original research paper. All publishable papers in this field share a common structure. Your proposal should have one paragraph for each of these five sections.
+            </p>
+
+            <h3>1. The Introduction (The "Hook")</h3>
+            <ul>
+                <li><strong>What is the problem?</strong> (e.g., "Food delivery platforms need to position drivers, but demand is uncertain.")</li>
+                <li><strong>Why does it matter?</strong> (e.g., "Poor positioning leads to high wait times and lost customers, costing millions.")</li>
+                <li><strong>What do you do?</strong> (e.g., "We develop a stochastic-dynamic model...").</li>
+                <li><strong>What do you find?</strong> (e.g., "...that our new policy reduces costs by 15% over the myopic heuristic.")</li>
+            </ul>
+
+            <h3>2. The Literature Review (The "Gap")</h3>
+            <ul>
+                <li><strong>What have others done? (The "Frontier"):</strong> (e.g., "Classical inventory theory (Scarf 1960) solved the static problem. On-demand research (Stream 3) has looked at...").</li>
+                <li><strong>What is the "Gap"?</strong> (e.g., "However, no model has yet integrated real-time ML demand updates with the formal DP model for driver inventory.")</li>
+            </ul>
+
+            <h3>3. The Model (The "Math")</h3>
+            <ul>
+                <li><strong>What are your assumptions?</strong> (e.g., "We assume a finite horizon $T$, Poisson demand...")</li>
+                <li><strong>What is your formulation?</strong> (e.g., "We formulate this as an MDP, $f_n(x) = \min \{ ... \}$.")</li>
+                <li><strong>What is your methodology?</strong> (e.g., "We prove the optimality of a new state-dependent (s,S) policy." or "We use SAA and empirical data...").</li>
+            </ul>
+            
+            <h3>4. The Analysis (The "Results")</h3>
+            <ul>
+                <li><strong>What did you find?</strong> (e.g., "Our numerical analysis shows our policy (Policy A) outperforms the benchmark (Policy B) under high demand volatility.")</li>
+                <li><strong>Why? (The "Insight"):</strong> (e.g., "This is because Policy A better accounts for...").</li>
+            </ul>
+
+            <h3>5. The Conclusion (The "So What?")</h3>
+            <ul>
+                <li><strong>What is the *managerial* takeaway?</strong> (e.g., "Our model suggests managers should stop using simple forecasts and use...").</li>
+                <li><strong>What are the limitations & future research?</strong> (e.g., "We did not model... Future research should...")</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Final Capstone Workshop: Your Research Proposal</h2>
+            <div class="callout">
+                <strong>Activity: Prepare a 1-page Research Proposal.</strong>
+            </div>
+            <ol class="resource-list">
+                <li>
+                    <strong>Select a Topic:</strong> Choose a topic from the "Frontier" module (Stream 3.2) or a novel combination (e.g., "Behavioral + Resilience").
+                </li>
+                <li>
+                    <strong>Identify a "Gap":</strong> What is the *one* specific, unanswered question you will address?
+                </li>
+                <li>
+                    <strong>Propose a Methodology:</strong> How will you answer it? (e_g., "I will build on the Clark & Scarf (1960) model to include...").
+                </li>
+                <li>
+                    <strong>State your "Contribution":</strong> What will the field learn from your paper that it does not already know?
+                </li>
+                <li>
+                    <strong>Present your proposal</strong> to the class for peer review and discussion.
+                </li>
+            </ol>
+            <p>
+                This proposal is the culmination of the course. It demonstrates you can move from *consuming* research to *creating* it.
+            </p>
+        </section>
+        
+        <!-- 
+          NO QUIZ: This is a capstone module.
+          The "quiz" is the final workshop.
+        -->
+        
+        <section>
+            <h2>Key References (Examples of Modern Synthesis)</h2>
+            <ul class="resource-list">
+                <li>This section is intentionally blank. The key references are the ones *you* find for your research proposal.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        This concludes the Inventory Management Academy. Good luck with your research.
+    </footer>
+
+    <!-- 
+      No Quiz JS needed for this page.
+    -->
+</body>
+</html>
