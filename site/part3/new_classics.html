@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Classical Research Trajectory</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template.
+      This is now Part 3, so the nav links are updated.
+    -->
+    <header>
+        <h1>The Classical Research Trajectory</h1>
+        <p>A synthesis of the historical evolution of inventory theory, from foundational trade-offs to system-wide dynamics.</p>
+        <nav>
+            <a href="overview.html">Part 3 Overview</a>
+            <a href="frontiers.html">Research Frontiers</a>
+            <a href="future.html">Future Research</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 3</a> &rsaquo; 
+            Classical Trajectory
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is a Ph.D.-level narrative synthesis of the field,
+          structuring the papers we've learned into "eras" of thought.
+        -->
+        <section>
+            <h2>Theory Essentials: The Four Eras of Inventory Research</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1 Hour</span>
+                <span>References: The entire field, 1913-2000s</span>
+            </div>
+            <p>
+                This module synthesizes what we have learned. The history of inventory management is not just a collection of models; it is a story about the evolution of Operations Research. It shows how researchers' "worldview" and available tools (mathematics, computation) shaped the very questions they sought to answer.
+            </p>
+        </section>
+
+        <section>
+            <h2>Era 1: The Foundational Era (1910s-1940s)</h2>
+            <h3>Worldview: The Deterministic Economic Trade-off</h3>
+            <p>
+                The field was born not from academia, but from industry. The central problem was seen as purely *economic*.
+            </p>
+            <ul>
+                <li><strong>Seminal Paper:</strong> Harris (1913), popularized by Wilson (1934).</li>
+                <li><strong>Core Contribution:</strong> The **EOQ model**. For the first time, a business problem was solved using mathematical optimization.</li>
+                <li><strong>Key Insight:</strong> The cost trade-off. It identified two opposing forces (fixed ordering costs vs. variable holding costs) and used calculus to find the unique minimum.</li>
+                <li><strong>Limitations:</strong> The model's worldview was static and deterministic. It assumed perfect knowledge of the future ($D$) and a simple, single-location world.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Era 2: The "Golden Age" (1950s-1960s)</h2>
+            <h3>Worldview: The Provably Optimal Stochastic Solution</h3>
+            <p>
+                This era was defined by the post-WWII boom in Operations Research and the development of new mathematical tools. The goal was to find the *provably optimal* solution to complex, stochastic problems.
+            </p>
+            <ol class="resource-list">
+                <li>
+                    <strong>The Stochastic Problem (Arrow, Harris, Marschak 1951):</strong> Formally introduced uncertainty. They analyzed the Newsvendor problem, creating the **Critical Ratio ($C_u/(C_o+C_u)$)**, which is arguably the single most important formula in stochastic O.R.
+                </li>
+                <li>
+                    <strong>The Dynamic Problem (Wagner & Whitin 1958):</strong> Introduced Dynamic Programming (DP) to solve the *deterministic* lot-sizing problem. The **Wagner-Whitin algorithm** and its "Zero-Inventory Property" proved that an $O(T^2)$ optimal solution existed.
+                </li>
+                <li>
+                    <strong>The Stochastic-Dynamic Problem (Scarf 1960):</strong> This was the grand synthesis. Scarf used DP and the new concept of **K-convexity** to prove that the simple **(s, S) policy** is the provably optimal solution for the multi-period stochastic inventory problem with fixed costs.
+                </li>
+                <li>
+                    <strong>The Network Problem (Clark & Scarf 1960):</strong> In the same year, they solved the multi-location problem. They introduced **Echelon Stock** and the **Decomposition Principle**, proving that a complex network could be "decomposed" into a series of solvable single-location problems.
+                </li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Era 3: The Managerial & Heuristic Era (1970s-1980s)</h2>
+            <h3>Worldview: The Need for "Good Enough" Implementable Solutions</h3>
+            <p>
+                The Golden Age provided optimal solutions that were often too complex to compute. The Wagner-Whitin algorithm, for example, was too slow for the new "Material Requirements Planning" (MRP) systems. This era focused on practical application.
+            </p>
+            <ul>
+                <li><strong>Key Papers:</strong> Silver & Meal (1973), Sherbrooke (1968).</li>
+                <li><strong>Core Contribution:</strong> Smart *heuristics*. The **Silver-Meal Heuristic** (minimize cost per period) and **Part-Period Balancing** (balance K and h) were fast, near-optimal, and easily implemented.</li>
+                <li><strong>Parallel Path:</strong> The **METRIC model (Sherbrooke)** was a brilliant, practical solution for the *repairable* item problem, using Poisson approximations to manage high-value spares for the Air Force. This era bridged the gap between pure theory and computational reality.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Era 4: The Supply Chain Era (1990s-2000s)</h2>
+            <h3>Worldview: The System of Uncoordinated Agents</h3>
+            <p>
+                By the 1990s, the focus shifted "outside the firm." Researchers realized that *rational* decisions at one location were creating *irrational* chaos for the system. The problem was no longer just math; it was about information and incentives.
+            </p>
+            <ul>
+                <li>
+                    <strong>The Information Problem (Lee, Padmanabhan, Whang 1997):</strong> Identified the **"Bullwhip Effect"**. Showed how demand signal processing, order batching, and price games distort information as it moves up the supply chain.
+                </li>
+                <li>
+                    <strong>The Incentive Problem (Cachon 2003, et al.):</strong> Used game theory (often a 2-stage Newsvendor) to analyze **Supply Chain Coordination**. Proved that "Double Marginalization" ruins a channel, and designed contracts (Buy-Back, Revenue-Sharing) to align incentives and achieve a centralized, optimal solution.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Workshop: Seminal Paper Deep Dive</h2>
+            <ol class="resource-list">
+                <li>
+                    <strong>Activity:</strong> Each student is assigned one seminal paper (e.g., Scarf 1960, Clark & Scarf 1960, Lee et al. 1997).
+                </li>
+                <li>
+                    Read the *original paper*. This is a core Ph.D. skill.
+                </li>
+                <li>
+                    Prepare a 5-minute presentation answering:
+                    <ol>
+                        <li>What was the *exact* problem they solved?</li>
+                        <li>What was the *key insight* or *methodological contribution*?</li>
+                        <li>Why is this paper still cited today? What did it "unlock" for future research?</li>
+                    </ol>
+                </li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Select two papers from *different eras* that address a similar problem (e.g., EOQ and Silver-Meal, or Newsvendor and Cachon). Write a 1-page "compare and contrast" on how their *assumptions* and *worldviews* differed.
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, conceptual quiz on the research eras.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-classics">
+                <div class.quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <p><strong>Question 1.</strong> What was the primary shift in thinking from the "Foundational Era" (e.g., Harris, 1913) to the "Golden Age" (e.g., Scarf, 1960)?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">From focusing on holding cost to focusing on ordering cost.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">From a deterministic, economic trade-off to finding the *provably optimal policy* for a stochastic, dynamic system.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">From multi-echelon systems to single-location systems.</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> The "Managerial & Heuristic Era" (e.g., Silver-Meal, 1973) emerged primarily because...</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">...the "Golden Age" optimal solutions (like Wagner-Whitin) were often too computationally complex for the MRP systems of the day.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">...researchers proved that ordering costs ($K$) were no longer relevant.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">...all the stochastic problems had been completely solved.</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> The "Supply Chain Era" (e.g., Lee et al. 1997, Cachon 2003) shifted the research problem from *internal optimization* to...</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">...purely mathematical proofs of K-convexity.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">...how to calculate the EOQ more accurately.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">...the problems of information distortion (Bullwhip Effect) and incentive misalignment (Coordination) between firms.</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-classics-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References ("The Greatest Hits")</h2>
+            <ul class="resource-list">
+                <li>Harris, F. W. (1913). <em>How many parts to make at once</em>.</li>
+                <li>Arrow, K. J., Harris, T., & Marschak, J. (1951). Optimal inventory policy.</li>
+                <li>Wagner, H. M., & Whitin, T. M. (1958). Dynamic version of the economic lot size model.</li>
+                <li>Scarf, H. (1960). The optimality of (S, s) policies in the dynamic inventory problem.</li>
+                <li>Clark, A. J., & Scarf, H. (1960). Optimal policies for a multi-echelon inventory problem.</li>
+                <li>Sherbrooke, C. C. (1968). METRIC: A multi-echelon technique...</li>
+                <li>Silver, E. A., & Meal, H. C. (1973). A heuristic for selecting lot size quantities...</li>
+                <li>Lee, H. L., Padmanabhan, V., & Whang, S. (1997). The bullwhip effect in supply chains.</li>
+                <li>Cachon, G. P. (2003). Supply chain coordination with contracts.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Reflect on how the "problem" of inventory has been re-defined every 20 years.
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-classics').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'c'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> The "Golden Age" took the deterministic, static problem from Era 1 and solved its stochastic, dynamic, and multi-echelon versions.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> The shift was from a simple, deterministic world to a complex, stochastic one (b). (c) is backwards; the Golden Age *introduced* multi-echelon models.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> This is the key. Theory had outpaced computation. The Silver-Meal heuristic was a direct response to the computational burden of the (optimal) Wagner-Whitin algorithm.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> (a) is the correct answer. The problems were not "solved" (c), but the *known optimal solutions* were too slow to be practical at the time.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> This era (Lee, Cachon) defined the *new* problem: the supply chain is a system of independent, misaligned agents, and we need to fix information flow (Bullwhip) and incentives (Contracts).</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> (c) is the correct answer. The focus shifted from a single firm's math problem to a multi-firm *coordination* problem.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-classics-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </document>
+    <script>
+        // Quiz JS logic goes here
+    </script>
+</body>
+</html>
