@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data-Driven Inventory Policies</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template for Part 2.
+    -->
+    <header>
+        <h1>Data-Driven Inventory Policies</h1>
+        <p>Integrating modern data science and machine learning with classical inventory optimization.</p>
+        <nav>
+            <a href="overview.html">Part 2 Overview</a>
+            <a href="new_stochastic_control.html">Stochastic Control</a>
+            <a href="new_multi_echelon.html">Multi-Echelon Systems</a>
+            <a href="new_service_policies.html">Service-Level Policies</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 2</a> &rsaquo; 
+            Data-Driven
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is massively expanded to introduce the modern
+          challenge of integrating ML (estimation) with OR (optimization).
+        -->
+        <section>
+            <h2>Theory Essentials: From Parameters to Data</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.5 Hours</span>
+                <span>References: Levi, Rudi, & Kallus (2015); Bertsimas & Thiele (2006)</span>
+            </div>
+            <p>
+                All the models we have studied (EOQ, Newsvendor, (Q,R)) share a fundamental assumption: we <strong>know the model parameters</strong>. We assume we know $D$, or we know the *exact* demand distribution $D \sim N(\mu, \sigma)$.
+            </p>
+            <p>
+                In reality, we have data. The standard, but flawed, approach is **"Estimate, then Optimize"** (also called "plug-in").
+            </p>
+            <ol>
+                <li><strong>Step 1 (Estimate):</strong> Use historical data to fit a distribution. (e.g., find $\hat{\mu} = 50, \hat{\sigma} = 10$).</li>
+                <li><strong>Step 2 (Optimize):</strong> Plug these *estimates* into the formula as if they are *truth*. (e.g., $Q^* = \hat{\mu} + z \hat{\sigma}$).</li>
+            </ol>
+            <p>
+                The critical flaw is that this approach **ignores estimation error**. The optimal decision for an *estimated* distribution is not necessarily the optimal decision for the *true* underlying problem. This leads to brittle and systematically biased policies, especially with limited data.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. The Non-Parametric Approach: Sample Average Approximation (SAA)</h2>
+            <p>
+                If we don't want to assume a parametric form (like $Normal$), we can use the data itself as the distribution. SAA, also called the "empirical" method, is a powerful and robust alternative.
+            </p>
+            <p>
+                Instead of solving the stochastic problem $\min_Q \mathbb{E}[Cost(Q, D)]$, we solve the *deterministic* problem based on our $N$ data points $d_1, ..., d_N$:
+            </p>
+            <blockquote>
+                $$ \min_Q \left\{ \frac{1}{N} \sum_{i=1}^N Cost(Q, d_i) \right\} $$
+            </blockquote>
+            <p>
+                **Example: The SAA Newsvendor**
+            </p>
+            <p>
+                The classical Newsvendor solution is $F(Q^*) = CR$, where $F(d)$ is the *assumed* CDF.
+                The SAA solution is $F_N(Q^*) = CR$, where $F_N(d)$ is the **empirical CDF**.
+            </p>
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">SAA Newsvendor Solution</h4>
+                <p>
+                    Let your $N$ historical demands be $d_1, ..., d_N$. Sort them: $d_{(1)} \le d_{(2)} \le ... \le d_{(N)}$.
+                </p>
+                <p>
+                    Let $CR = \frac{C_u}{C_o+C_u}$ be the critical ratio.
+                </p>
+                <p>
+                    Find the index $k = \lceil CR \cdot N \rceil$.
+                </p>
+                <p>
+                    The SAA optimal order quantity is $Q^* = d_{(k)}$.
+                </p>
+            </div>
+            <p>
+                This is simple, requires no distributional assumptions, and is provably robust.
+            </p>
+        </section>
+
+        <section>
+            <h2>3. The "Prescriptive Analytics" (Integrated) Approach</h2>
+            <p>
+                This is the modern research frontier. What if we have *features* (or "covariates") for each demand point? For example, $x = (\text{weather, day of week, holiday, price})$.
+            </p>
+            <p>
+                The "Estimate, then Optimize" approach would:
+            </p>
+            <ol>
+                <li>Build an ML model (e.g., Random Forest) to get a forecast $\hat{\mu}(x)$.</li>
+                <li>Plug $\hat{\mu}(x)$ into a Newsvendor formula $Q(x) = \hat{\mu}(x) + z\sigma$.</li>
+            </ol>
+            <p>
+                The flaw is that the ML model is trained to minimize *forecast error* (e.g., $\min \mathbb{E}[(D - \hat{D})^2]$), not to minimize *decision cost* (e.g., $\min \mathbb{E}[Cost(Q(x), D)]$ ).
+            </p>
+            <p>
+                The **prescriptive approach** (e.g., in papers by Levi, Rudi, Kallus, or Bertsimas) builds a model that *directly* optimizes the decision. It seeks a policy $\pi(x) \rightarrow Q$ that minimizes the *end-to-end* Newsvendor cost, using techniques like stochastic gradient descent on the cost function itself. This "cost-sensitive" learning is far more powerful.
+            </p>
+        </section>
+
+        <section>
+            <h2>Workshop: SAA vs. Plug-in</h2>
+            <div class="callout">
+                <strong>Scenario:</strong> You are a Newsvendor with $C_u = 8$ and $C_o = 2$.
+                <br>You have 10 historical demand data points: $\{15, 22, 28, 31, 35, 39, 44, 48, 55, 60\}$.
+            </div>
+            <ol class="resource-list">
+                <li>Calculate the Critical Ratio $CR$.</li>
+                <li><strong>Policy A (SAA):</strong> Use the SAA method to find the optimal order quantity $Q^*_{SAA}$ from the *sorted data* and the $CR$.</li>
+                <li><strong>Policy B (Plug-in):</strong> Calculate the sample mean ($\hat{\mu} = 37.7$) and sample std. dev. ($\hat{\sigma} \approx 14.5$) from the data. Assume $D \sim N(\hat{\mu}, \hat{\sigma})$ and calculate the "plug-in" optimal quantity $Q^*_{Plug}$. (Hint: $z$ for $CR=0.8$ is $\approx 0.84$).</li>
+                <li>Compare $Q^*_{SAA}$ and $Q^*_{Plug}$. Discuss the risks of the plug-in method.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Find a paper on "Prescriptive Analytics" or "Contextual Newsvendor" (e.g., Levi et al. 2015). How do they formulate the loss function to train their model, and how does it differ from a standard MSE loss?
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, conceptual quiz on data-driven concepts.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-dd">
+                <div class="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <p><strong>Question 1.</strong> What is the primary flaw of the "Estimate, then Optimize" (plug-in) approach?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">It is too difficult to calculate the parameters $\mu$ and $\sigma$.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">It ignores estimation error, treating parameter estimates as "truth".</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">It only works for the EOQ model.</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> The "Sample Average Approximation" (SAA) method for a Newsvendor problem...</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">...finds the optimal $Q^*$ based on the *empirical* CDF (the data itself), not an assumed $Normal$ distribution.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">...averages the $Q^*$ from several different assumed distributions.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">...is only used when $N > 1000$ data points.</label>
+                    </div>
+                    
+                    <p><strong>Question 3.</strong> "Prescriptive Analytics" (the integrated approach) differs from "Predictive Analytics" (e.g., a standard ML forecast) because...</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">...it uses a different programming language (e.g., Python vs. R).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">...it optimizes the *decision cost* (e.g., Newsvendor cost) directly, rather than just optimizing the *forecast accuracy* (e.g., MSE).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">...it only works for deterministic problems (like DLS).</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-dd-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Levi, R., Rudi, A., & Kallus, N. (2015). Data-driven inventory management. <em>Foundations and Trends® in Technology, Information and Operations Management</em>, 9(3-4), 185-328.</li>
+                <li>Bertsimas, D., & Thiele, A. (2006). A robust optimization approach to inventory management. <em>Management Science</em>, 52(6), 867-882.</li>
+                <li>Kallus, N. (2018). From data to decisions: A framework for newsvendor-type problems. <em>Operations Research</em>, 66(2), 481-498.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        This concludes Part 2. Reflect on how these advanced models (Stochastic, Echelon, Service, Data-Driven) relax the simple assumptions of Part 1.
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-dd').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'a',
+                q3: 'b'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> This is the key flaw. The "plug-in" method treats $\hat{\mu}$ and $\hat{\sigma}$ as if they are the true parameters, ignoring the uncertainty in our own estimation.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> The main problem is (b). It\'s easy to *calculate* $\hat{\mu}$ (a), but it is philosophically wrong to treat that *estimate* as *truth*.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> SAA is a non-parametric method. It uses the empirical CDF (the sorted data itself) to find the $Q^*$ that satisfies the Critical Ratio, $F_N(Q^*) \ge CR$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> The core idea of SAA is (a), to use the *data itself* as the distribution, which is a very robust and powerful idea.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> This is the heart of "Prescriptive Analytics." A predictive model minimizes *forecast error* (e.g., MSE). A prescriptive model minimizes *decision cost* (e.g., Newsvendor cost). The best forecast does not always lead to the best decision.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> The key difference is the *objective function*. (b) correctly identifies that prescriptive models optimize for the *cost of the decision*, not the accuracy of the forecast.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-dd-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
