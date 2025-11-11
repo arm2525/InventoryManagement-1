@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Newsvendor (Single-Period) Problem</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template
+    -->
+    <header>
+        <h1>The Newsvendor (Single-Period) Problem</h1>
+        <p>Analyzing the optimal decision for a single order under stochastic demand, balancing the cost of "too much" vs. "too little".</p>
+        <nav>
+            <a href="overview.html">Part 1 Overview</a>
+            <a href="part1_module1_eoq_revised.html">EOQ</a>
+            <a href="new_safety_stock.html">Safety Stock</a>
+            <a href="new_dynamic_demand.html">Lot Sizing</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb"><a href="../index.html">Home</a> &rsaquo; Newsvendor</div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is massively expanded from the original stub
+          to include the formal derivations.
+        -->
+        <section>
+            <h2>Theory Essentials: The Stochastic Single-Period Problem</h2>
+            <div class="lesson-meta">
+                <span>Duration: 30 Minutes</span>
+                <span>References: Arrow, Harris, & Marschak (1951)</span>
+            </div>
+            <p>
+                This is perhaps the most fundamental "stochastic" inventory problem. Unlike the EOQ or DLS models, we are not in a multi-period world. We have <strong>one chance</strong> to order, and this single order must satisfy all demand for the period.
+            </p>
+            <p>
+                The problem is defined by the "too much, too little" tradeoff.
+            </p>
+            <ul>
+                <li>If we order too much, we are left with unsold, perishable (or obsolete) inventory.</li>
+                <li>If we order too little, we miss out on potential profit from customers.</li>
+            </ul>
+            <p>This model applies to seasonal goods (e.g., ski jackets), perishable items (e.g., newspapers, milk), or capacity decisions (e.g., booking airline seats).</p>
+
+            <h3>1.1 Formal Definition & Marginal Analysis</h3>
+            <p>We define the following parameters:</p>
+            <ul>
+                <li>$D$ = Demand, a random variable with CDF $F(d) = P(D \le d)$ and PDF $f(d)$.</li>
+                <li>$c$ = Cost per unit (purchase cost).</li>
+                <li>$p$ = Price per unit (selling price).</li>
+                <li>$s$ = Salvage value per unsold unit ($s < c$).</li>
+                <li>$Q$ = The order quantity, our one decision variable.</li>
+            </ul>
+            <p>
+                The key insight comes from marginal analysis. Let $Q^*$ be the optimal order quantity. We should order the $Q^{th}$ unit as long as the expected *gain* from that unit is greater than the expected *loss*.
+            </p>
+            <p>
+                If we order one more unit (the $Q^{th}$ unit), one of two things will happen:
+            </p>
+            <ol>
+                <li><strong>This unit is sold:</strong> This happens if $Demand \ge Q$. The probability of this is $P(D \ge Q) = 1 - F(Q)$. The *gain* from this event is the profit we make, $p - c$.</li>
+                <li><strong>This unit is NOT sold:</strong> This happens if $Demand < Q$. The probability of this is $P(D < Q) = F(Q)$. The *loss* from this event is our cost $c$ minus our salvage $s$, or $c - s$.</li>
+            </d>
+            <p>
+                At the optimum $Q^*$, the expected gain equals the expected loss.
+            </p>
+            <blockquote>
+                $$ \text{Expected Gain} = \text{Expected Loss} $$
+                $$ (p - c) \times P(D \ge Q^*) = (c - s) \times P(D < Q^*) $$
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>2. The Critical Ratio</h2>
+            <p>
+                The equation above is the key. Let's simplify the terms.
+            </p>
+            <ul>
+                <li>$C_u = \text{Cost of Understocking}$ (per unit) = $p - c$. This is the profit we *miss out on* for every unit we were short.</li>
+                <li>$C_o = \text{Cost of Overstocking}$ (per unit) = $c - s$. This is the net loss we take on every unsold unit.</li>
+            </ul>
+            <p>Now, we substitute these into our equilibrium equation:</p>
+            <blockquote>
+                $$ C_u \times (1 - F(Q^*)) = C_o \times F(Q^*) $$
+                $$ C_u - C_u F(Q^*) = C_o F(Q^*) $$
+                $$ C_u = F(Q^*) (C_o + C_u) $$
+            </blockquote>
+            <p>
+                This gives the final, famous formula for the <b>Critical Ratio</b>:
+            </p>
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">The Critical Ratio</h4>
+                $$ F(Q^*) = P(D \le Q^*) = \frac{C_u}{C_o + C_u} $$
+            </div>
+            <p>
+                This ratio, $CR = \frac{C_u}{C_o + C_u}$, represents the optimal Cycle Service Level (CSL) for a single-period problem. It is the probability that demand will be less than or equal to our order quantity.
+            </p>
+
+            <h3>2.1 Finding the Optimal Quantity $Q^*$</h3>
+            <p>The formula does not give us $Q^*$ directly. It gives us the *target service level* $F(Q^*)$.</p>
+            
+            <h4>Case 1: Demand is Normally Distributed $D \sim N(\mu, \sigma)$</h4>
+            <p>
+                This is the most common continuous case. We find $Q^*$ just like finding a reorder point.
+            </p>
+            <ol>
+                <li>Calculate the Critical Ratio: $CR = \frac{C_u}{C_o + C_u}$.</li>
+                <li>Find the corresponding $z$-score: $z = \Phi^{-1}(CR)$ (i.e., `NORM.S.INV(CR)`).</li>
+                <li>Calculate $Q^* = \mu + z \cdot \sigma$.</li>
+            </ol>
+            
+            <h4>Case 2: Demand is Discrete</h4>
+            <p>
+                If demand is given as a table of probabilities, we must build the CDF $F(d) = P(D \le d)$.
+            </p>
+            <ol>
+                <li>Calculate the Critical Ratio, $CR$.</li>
+                <li>Create a table for demand $d$, $P(D=d)$, and the cumulative $F(d)$.</li>
+                <li>Find the <strong>smallest quantity $d$</strong> for which $F(d) \ge CR$.</li>
+                <li>This quantity is $Q^*$.</li>
+            </ol>
+        </section>
+        
+        <section>
+            <h2>Workshop: Discrete vs. Continuous</h2>
+            <div class="callout">
+                <strong>Scenario:</strong> You sell a seasonal item.
+                <ul>
+                    <li>Cost ($c$): $40</li>
+                    <li>Price ($p$): $100</li>
+                    <li>Salvage ($s$): $10</li>
+                </ul>
+            </div>
+            <ol class="resource-list">
+                <li>Calculate $C_o$, $C_u$, and the Critical Ratio $CR$.</li>
+                <li><strong>Part A (Discrete):</strong> Given the demand distribution {d=10, P=0.2; d=20, P=0.5; d=30, P=0.3}, build the CDF. What is the optimal $Q^*$?</li>
+                <li><strong>Part B (Continuous):</strong> Assume demand is now $D \sim N(\mu=20, \sigma=5)$. What is the optimal $Q^*$?</li>
+                <li>Compare the $Q^*$ from Part A and Part B. Discuss the impact of the distribution assumption.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Investigate <strong>Behavioral Operations Management</strong>. What is the "Newsvendor effect"? Do real managers order the optimal $Q^*$? (Hint: See Schweitzer & Cachon, 2000).
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, calculation-based quiz with embedded JS,
+          matching the template format.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-nv">
+                <div class="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                        <strong>Data for all questions:</strong>
+                        <ul>
+                            <li>Cost ($c$): $40</li>
+                            <li>Price ($p$): $100</li>
+                            <li>Salvage ($s$): $10</li>
+                            <li>Demand is Normal: $D \sim N(\mu=500, \sigma=80)$</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Question 1.</strong> What are the Cost of Overstocking ($C_o$) and Cost of Understocking ($C_u$)?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">$C_o = 40, C_u = 100$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">$C_o = 60, C_u = 30$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">$C_o = 30, C_u = 60$</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> What is the Critical Ratio $CR = \frac{C_u}{C_o + C_u}$?</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">$CR \approx 0.667$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">$CR = 0.500$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">$CR \approx 0.333$</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> What is the optimal order quantity $Q^*$? (Hint: The $z$-score for $P(Z \le z) = 0.667$ is $z \approx 0.43$.)</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">$Q^* = 500$ units</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">$Q^* \approx 534$ units</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">$Q^* \approx 466$ units</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-nv-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Arrow, K. J., Harris, T., & Marschak, J. (1951). Optimal inventory policy. <em>Econometrica</em>, 19(3), 250-272.</li>
+                <li>Schweitzer, M. E., & Cachon, G. P. (2000). Decision bias in the newsvendor problem with a known demand distribution: Experimental evidence. <em>Management Science</em>, 46(3), 404-420.</li>
+                <li>Porteus, E. L. (2002). <em>Foundations of Stochastic Inventory Theory</em>. Stanford University Press.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        This concludes Part 1. Reflect on how these four foundational models (EOQ, SS, DLS, NV) serve as the building blocks for all advanced models.
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-nv').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'c',
+                q2: 'a',
+                q3: 'b'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> <br/> Cost of Overstocking $C_o = c - s = 40 - 10 = 30$. <br/> Cost of Understocking $C_u = p - c = 100 - 40 = 60$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> Remember, $C_o$ is the net loss on an unsold unit ($c-s$), and $C_u$ is the missed profit on a unit you were short ($p-c$).</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> <br/> $CR = C_u / (C_o + C_u) = 60 / (30 + 60) = 60 / 90 = 0.666... \\approx 0.667$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> Be sure to use the $C_o$ and $C_u$ values from Q1 in the formula $\frac{C_u}{C_o + C_u}$.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> <br/> We use the $z$-score $z \\approx 0.43$ (for the $CR=0.667$). <br/> $Q^* = \\mu + z \cdot \\sigma = 500 + (0.43 \cdot 80) = 500 + 34.4 \approx 534$ units.</li>';
+            } else {
+                let error = "This is the final calculation step.";
+                if(userAnswers.q3 === 'a') error = "Ordering 500 only covers the mean, giving a 50% CSL, but our $CR$ is 66.7%.";
+                if(userAnswers.q3 === 'c') error = "This would imply a $z$-score that is negative, but our $CR > 0.5$.";
+                feedbackHtml += `<li style="color: red;"><strong>Question 3: Incorrect.</strong> ${error} The formula is $Q^* = \\mu + z \cdot \\sigma$.</li>`;
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-nv-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
