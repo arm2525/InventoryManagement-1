@@ -202,59 +202,48 @@
           Quiz HTML is cleaned up to be valid and accessible.
           It now uses your original class="quiz" and class="quiz-result".
         -->
-        <section>
-            <h2>Quiz</h2>
-            <form id="quiz-eoq">
-                <div class="quiz">
-                    <!-- FIX: Corrected label/input nesting for all questions -->
-                    <p><strong>Question 1.</strong> The primary goal of the classical EOQ model is to:</p>
-                    <div>
-                        <input type="radio" name="q1" id="q1a" value="a" />
-                        <label for="q1a">The EOQ minimizes purchase price.</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="q1" id="q1b" value="b" />
-                        <label for="q1b">The EOQ balances ordering and holding costs per unit time.</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="q1" id="q1c" value="c" />
-                        <label for="q1c">The EOQ maximizes order frequency.</label>
-                    </div>
+    <section>
+      <h2>Quiz</h2>
+      <form id="quiz-eoq" data-quiz-form data-result-target="quiz-eoq-result" data-answers='{"q1":"b","q2":"a","q3":"c"}'>
+        <div class="quiz">
+          <h4>Check your understanding</h4>
+          <label for="q1b">
+            <input type="radio" name="q1" id="q1a" value="a" /> The EOQ minimizes purchase price.
+          </label>
+          <label>
+            <input type="radio" name="q1" id="q1b" value="b" /> The EOQ balances ordering and holding costs per unit time.
+          </label>
+          <label>
+            <input type="radio" name="q1" id="q1c" value="c" /> The EOQ maximizes order frequency.
+          </label>
 
-                    <p><strong>Question 2.</strong> The EOQ closed form assumes:</p>
-                    <div>
-                        <input type="radio" name="q2" id="q2a" value="a" />
-                        <label for="q2a">Deterministic, stationary demand and instantaneous replenishment.</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="q2" id="q2b" value="b" />
-                        <label for="q2b">Time-varying stochastic demand.</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="q2" id="q2c" value="c" />
-                        <label for="q2c">Capacity constraints binding at each cycle.</label>
-                    </div>
+          <p><strong>Question 2.</strong> The EOQ closed form assumes:</p>
+          <label>
+            <input type="radio" name="q2" value="a" /> Deterministic, stationary demand and instantaneous replenishment.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="b" /> Time-varying stochastic demand.
+          </label>
+          <label>
+            <input type="radio" name="q2" value="c" /> Capacity constraints binding at each cycle.
+          </label>
 
-                    <p><strong>Question 3.</strong> Sensitivity analysis of EOQ typically shows:</p>
-                    <div>
-                        <input type="radio" name="q3" id="q3a" value="a" />
-                        <label for="q3a">EOQ is linear in holding cost.</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="q3" id="q3b" value="b" />
-                        <label for="q3b">EOQ doubles when demand halves.</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="q3" id="q3c" value="c" />
-                        <label for="q3c">EOQ changes with the square root of parameter ratios.</label>
-                    </div>
+          <p><strong>Question 3.</strong> Sensitivity analysis of EOQ typically shows:</p>
+          <label>
+            <input type="radio" name="q3" value="a" /> EOQ is linear in holding cost.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="b" /> EOQ doubles when demand halves.
+          </label>
+          <label>
+            <input type="radio" name="q3" value="c" /> EOQ changes with the square root of parameter ratios.
+          </label>
 
-                    <button type="submit">Submit</button>
-                    <!-- FIX: Using your original result div id and class -->
-                    <div id="quiz-eoq-result" class="quiz-result" style="display: none;"></div>
-                </div>
-            </form>
-        </section>
+          <button type="submit">Submit</button>
+          <div id="quiz-eoq-result" class="quiz-result"></div>
+        </div>
+      </form>
+    </section>
 
         <!-- 
           Your original "Key References" section, unchanged.
@@ -273,83 +262,10 @@
     <!-- 
       FIX: Kept your original footer structure.
     -->
-    <footer>
-        Reflect on how EOQ informs the advanced policies studied in Part 2.
-    </footer>
+  <footer>
+    Reflect on how EOQ informs the advanced policies studied in Part 2.
+  </footer>
+  <script src="../assets/js/quiz.js" defer></script>
 
-    <!-- 
-      FIX: 
-      Replaced the link to 'quiz.js' with this embedded, functional script.
-      It provides detailed feedback for each question.
-      It uses your 'quiz-eoq-result' div for output.
-    -->
-    <script>
-        document.getElementById('quiz-eoq').addEventListener('submit', function(event) {
-            // Stop the form from submitting the old-fashioned way
-            event.preventDefault();
-
-            // Correct answers based on your quiz
-            const correctAnswers = {
-                q1: 'b',
-                q2: 'a',
-                // Note: Your Q3 is a bit ambiguous. 'c' is the best fit.
-                // The robustness formula shows cost changes, not EOQ.
-                // EOQ (Q*) changes with the square root of parameters (D, K, h).
-                q3: 'c' 
-            };
-
-            const userAnswers = {
-                q1: document.querySelector('input[name="q1"]:checked')?.value,
-                q2: document.querySelector('input[name="q2"]:checked')?.value,
-                q3: document.querySelector('input[name="q3"]:checked')?.value
-            };
-
-            let score = 0;
-            let feedbackHtml = '<ul>';
-
-            // Question 1 Feedback
-            if (userAnswers.q1 === correctAnswers.q1) {
-                score++;
-                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> The EOQ finds the minimum cost by balancing the tradeoff between fixed ordering costs and variable holding costs.</li>';
-            } else {
-                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> The classical EOQ model assumes purchase price is constant. It minimizes the sum of ordering and holding costs, not price.</li>';
-            }
-
-            // Question 2 Feedback
-            if (userAnswers.q2 === correctAnswers.q2) {
-                score++;
-                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> These are two of the most critical (and most frequently violated) assumptions of the basic model.</li>';
-            } else {
-                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> Stochastic demand or capacity constraints require more advanced models (like Safety Stock or EPQ). The basic EOQ assumes these away.</li>';
-            }
-
-            // Question 3 Feedback
-            if (userAnswers.q3 === correctAnswers.q3) {
-                score++;
-                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> This is the key insight. $Q^*$ itself changes with the square root of $D$, $K$, and $1/h$. The *total cost* is even less sensitive (robust).</li>';
-            } else {
-                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> $Q^*$ is proportional to $1/\sqrt{h}$, not linear. It doubles when demand *quadruples*. The "square root" relationship (c) is the correct insight.</li>';
-            }
-
-            feedbackHtml += '</ul>';
-
-            const resultDiv = document.getElementById('quiz-eoq-result');
-            
-            // Add summary header
-            if (score === 3) {
-                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
-                resultDiv.style.border = "1px solid green";
-                resultDiv.style.backgroundColor = "#f0fff4";
-            } else {
-                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
-                resultDiv.style.border = "1px solid red";
-                resultDiv.style.backgroundColor = "#fff5f5";
-            }
-
-            resultDiv.style.display = 'block';
-            resultDiv.style.padding = '1em';
-            resultDiv.style.marginTop = '1em';
-        });
-    </script>
 </body>
 </html>
