@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale-1.0" />
+    <title>Multi-Echelon Inventory Theory</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template for Part 2.
+    -->
+    <header>
+        <h1>Multi-Echelon Inventory Theory</h1>
+        <p>Analyzing inventory in multi-level systems, from single-warehouse, multi-retailer networks to complex supply chains.</p>
+        <nav>
+            <a href="overview.html">Part 2 Overview</a>
+            <a href="new_stochastic_control.html">Stochastic Control</a>
+            <a href="new_coordination.html">Coordination</a>
+            <a href="new_advanced_stochastic.html">Advanced Stochastic</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 2</a> &rsaquo; 
+            Multi-Echelon
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is massively expanded to introduce the core concepts
+          of Echelon Stock and Risk Pooling.
+        -->
+        <section>
+            <h2>Theory Essentials: Beyond a Single Location</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.5 Hours</span>
+                <span>References: Clark & Scarf (1960); Sherbrooke (1968)</span>
+            </div>
+            <p>
+                All models in Part 1 (EOQ, (Q,R), Newsvendor) treated the inventory location as an island. Demand was external, and replenishment was from an "infinite" external supplier. This assumption fails in any real supply chain, which consists of a *network* of locations (e.g., Factory &rarr; Central Warehouse &rarr; Retailers).
+            </p>
+            <p>
+                The core problem is **coordination**. If a retailer places an order, it becomes *demand* for the warehouse. If the warehouse stocks out, it impacts the retailer's lead time. Treating each location as an independent (Q, R) problem is provably suboptimal.
+            </p>
+
+            <h3>1.1 The Central Concept: Echelon Stock</h3>
+            <p>
+                The breakthrough in multi-echelon theory came from a new definition of inventory.
+            </p>
+            <ul>
+                <li><strong>Local Stock (or "Installation Stock"):</strong> The physical inventory on-hand at a single location. This is what we've used so far.</li>
+                <li><strong>Echelon Stock:</strong> The inventory at a location *plus* all inventory downstream from it.</li>
+            </ul>
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">Echelon Stock Definition</h4>
+                <p>
+                    Consider a 2-level system: Warehouse (W) and Retailer (R).
+                </p>
+                <p>
+                    Echelon 2 Stock (Retailer) = $I_R$ (Inventory at R)
+                </p>
+                <p>
+                    Echelon 1 Stock (Warehouse) = $I_W$ (Inventory at W) + $I_R$ (Inventory at R)
+                </p>
+                <p>
+                    This is the key insight. The "Echelon 1" inventory represents the *total system inventory* available to satisfy end-customer demand. The inventory at the warehouse $I_W$ only serves to satisfy the *net demand* for Echelon 1.
+                </p>
+            </div>
+
+            <h3>1.2 The Seminal Model: Clark & Scarf (1960)</h3>
+            <p>
+                Clark and Scarf (1960) analyzed a multi-echelon system (like a tree, or "arborescent" structure) with stochastic demand. They proved a remarkable theorem:
+            </p>
+            <blockquote>
+                <strong>Clark & Scarf Decomposition Principle:</strong> A complex, multi-echelon inventory problem can be **decomposed** into a set of independent, single-echelon problems *if and only if* one uses **echelon stock** positions for control.
+            </blockquote>
+            <p>
+                This means we can apply a single-location, periodic-review (R, S) policy to each *echelon*, not to each *location*.
+            </p>
+            <ol>
+                <li><strong>Retailer (Echelon 2):</strong> Has a target $S_R$. Orders up to $S_R$ from the warehouse.</li>
+                <li><strong>Warehouse (Echelon 1):</strong> Has a target $S_W$. This is the target for its *echelon stock* ($I_W + I_R$). It places an order with the factory to bring the *total system stock* up to $S_W$.</li>
+            </ol>
+            <p>
+                This ensures that the warehouse's order decision is "aware" of the inventory at the retailer, preventing over-ordering.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. Key Insight: Risk Pooling (The Square-Root Rule)</h2>
+            <p>
+                The most valuable insight from multi-echelon theory is **risk pooling**. This explains *why* central warehouses exist.
+            </p>
+            <p>
+                Imagine $N$ retailers, each with identical, independent demand $D_i \sim N(\mu, \sigma)$.
+            </p>
+            
+            <h4>Case 1: Decentralized System (No Warehouse)</h4>
+            <p>
+                Each retailer holds its own safety stock to cover its own lead time $L$.
+            </p>
+            <ul>
+                <li>Demand during Lead Time for one retailer: $DDLT_i \sim N(\mu_L, \sigma_L)$</li>
+                <li>Safety Stock for one retailer (for $z$ service level): $SS_i = z \cdot \sigma_L$</li>
+                <li><strong>Total System Safety Stock: $SS_{Total} = \sum_{i=1}^N SS_i = N \cdot z \cdot \sigma_L$</strong></li>
+            </ul>
+
+            <h4>Case 2: Centralized System (One Warehouse)</h4>
+            <p>
+                We close the $N$ retailers and replace them with one central warehouse. This warehouse now faces the *total* demand, $D_P = \sum D_i$.
+            </p>
+            <ul>
+                <li>Mean of Pooled Demand: $\mu_P = \sum \mu = N \cdot \mu$</li>
+                <li>Variance of Pooled Demand: $Var(D_P) = \sum \sigma^2 = N \cdot \sigma^2$</li>
+                <li>Std. Dev. of Pooled Demand: $\sigma_P = \sqrt{N \cdot \sigma^2} = \sqrt{N} \cdot \sigma$</li>
+            </ul>
+            <p>
+                The demand during lead time for this pooled warehouse has $\sigma_{L,P} = \sqrt{N} \cdot \sigma_L$.
+            </p>
+            <ul>
+                <li><strong>Total System Safety Stock: $SS_{Total} = z \cdot \sigma_{L,P} = z \cdot \sqrt{N} \cdot \sigma_L$</strong></li>
+            </ul>
+            
+            <div class="callout">
+                <strong>The Square-Root Rule:</strong> The required safety stock in the centralized (pooled) system is a factor of $\sqrt{N}$ less than the decentralized system.
+                <p> $ \frac{SS_{Pooled}}{SS_{Decentralized}} = \frac{z \sqrt{N} \sigma_L}{z N \sigma_L} = \frac{\sqrt{N}}{N} = \frac{1}{\sqrt{N}} $ </p>
+                <p>If you have 4 retailers, pooling their stock into one warehouse can (in theory) reduce the required safety stock by $1/\sqrt{4} = 50\%$.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. The METRIC Model: Sherbrooke (1968)</h2>
+            <p>
+                A separate but equally important branch of multi-echelon theory was developed for **repairable items** (e.g., jet engines, high-value electronics). When an item fails at a base, it's not consumed; it's sent for repair.
+            </p>
+            <p>
+                Sherbrooke's METRIC model ("Multi-Echelon Technique for Recoverable Item Control") provided the first analytical solution for this.
+            </p>
+            <ul>
+                <li><strong>Assumption:</strong> Base-level demands follow a Poisson process.</li>
+                <li><strong>Key Insight:</strong> Uses Palm's Theorem to show that for a Poisson process, the number of items "in the pipeline" (in repair) follows a simple Poisson distribution, *regardless* of the repair time distribution (as long as it's i.i.d.).</li>
+                <li><strong>Impact:</strong> This allowed for the optimization of spare parts (an inventory problem) by balancing the cost of spares against the service level (e.g., "fill rate" or "Expected Backorders") at each airbase. It was a massive breakthrough for military and high-tech logistics.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Workshop: Pooling & Echelon Stock</h2>
+            <ol class="resource-list">
+                <li>Given a 1-warehouse, 2-retailer system, calculate the Echelon 1 and Echelon 2 stock levels.</li>
+                <li>Given 5 retailers with $\mu=20, \sigma=8$, calculate the total system safety stock required for a 95% CSL ($z=1.645$) in (a) a decentralized system and (b) a centralized (pooled) system. Calculate the percentage reduction.</li>
+                <li>Read Clark & Scarf (1960). Prepare a summary of the "balancing" and "costing" phases of their decomposition.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Risk pooling is a key benefit, but what are the *drawbacks* of centralization? Find one paper that models the trade-off between (a) reduced inventory from pooling and (b) increased transportation costs or lead times.
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, conceptual quiz on the advanced content.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-me">
+                <div class="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <p><strong>Question 1.</strong> "Echelon Stock" at a warehouse (Echelon 1) is correctly defined as:</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">The physical inventory on-hand at the warehouse.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">The inventory in transit *to* the warehouse.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">The inventory at the warehouse PLUS all inventory at downstream locations (e.g., retailers) served by it.</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> The primary benefit of "Risk Pooling" is that consolidating inventory from $N$ locations to 1 central location...</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">...reduces the total system safety stock by a factor of $\sqrt{N}$ (the "Square-Root Rule").</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">...reduces the fixed ordering cost $K$ for the whole system.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">...eliminates all demand variability.</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> Which seminal paper provided the "decomposition" method for arborescent systems by using echelon stock, and which paper introduced the Poisson-based model for repairable items?</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">Decomposition = Wagner-Whitin (1958), Repairable = Silver-Meal (1973)</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">Decomposition = Clark & Scarf (1960), Repairable = Sherbrooke (1968)</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">Decomposition = Sherbrooke (1968), Repairable = Clark & Scarf (1960)</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-me-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Clark, A. J., & Scarf, H. (1960). Optimal policies for a multi-echelon inventory problem. <em>Management Science</em>, 6(4), 475-490.</li>
+                <li>Sherbrooke, C. C. (1968). METRIC: A multi-echelon technique for recoverable item control. <em>Operations Research</em>, 16(1), 122-141.</li>
+                <li>Federgruen, A. (1993). Multi-echelon inventory systems. In <em>Logistics of Production and Inventory</em> (pp. 515-560). North-Holland.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Reflect on how echelon stock is the key to coordinating a supply chain, while risk pooling is the key to designing one.
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-me').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'c',
+                q2: 'a',
+                q3: 'b'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> This is the key definition. Echelon stock represents all system inventory *downstream* from a point, plus the inventory at that point.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> "Local" or "Installation" stock (a) is what we used in Part 1. Echelon stock (c) is the critical concept for multi-level control.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> This is the "Square-Root Rule". Because the standard deviation of pooled demand scales with $\sqrt{N}$ while the sum of individual standard deviations scales with $N$, pooling reduces total safety stock.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> Pooling aggregates demand, which reduces *variability* (and thus safety stock). It does not eliminate variability (c) or change fixed ordering costs (b).</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> Clark & Scarf (1960) is the foundational paper for decomposition using echelon stock. Sherbrooke\'s (1968) METRIC model is the foundation for repairable, multi-echelon systems.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> These are two of the most-cited paper-pairs in the field. (a) are both single-location model papers. (c) has them reversed.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-me-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
