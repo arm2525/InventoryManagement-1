@@ -99,10 +99,10 @@
             <h3>1.1 Notation</h3>
             <p>We define the following parameters:</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
-                <div class="bg-gray-50 p-4 rounded-lg border"><p>$$<strong>D</strong> = Annual demand (units/year)$$</p></div>
-                <div class="bg-gray-50 p-4 rounded-lg border"><p>$$<strong>K</strong> = Fixed ordering cost per order ($/order)$$</p></div>
-                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$$h$$</strong> = Annual holding cost per unit ($/unit/year)</div>
-                <div class="bg-gray-50 p-4 rounded-lg border"><strong>$$c$$</strong> = Unit purchase cost ($/unit)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>D</strong> = Annual demand (units/year)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>K</strong> = Fixed ordering cost per order ($/order)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>h</strong> = Annual holding cost per unit ($/unit/year)</div>
+                <div class="bg-gray-50 p-4 rounded-lg border"><strong>c</strong> = Unit purchase cost ($/unit)</div>
             </div>
 
             <h3>1.2 Calculus-Based Derivation</h3>
@@ -113,22 +113,22 @@
             <p>Total Annual Ordering Cost = $$(Number of orders) \times (Cost per order) = \frac{D}{Q} K$$</p>
 
             <h4>Step 2: Define Total Annual Holding Cost</h4>
-            <p>The inventory level follows a sawtooth pattern from $Q$ to 0. The average inventory level is $$\frac{Q}{2}$$.</p>
+            <p>The inventory level follows a sawtooth pattern from Q to 0. The average inventory level is $$\frac{Q}{2}$$.</p>
             <p>Total Annual Holding Cost = $$(Average inventory) \times (Holding cost per unit/year) = \frac{Q}{2} h$$</p>
 
             <h4>Step 3: Define Total Annual Relevant Cost (TRC)</h4>
-            <p>The total annual purchase cost ($$D \times c$$) is constant (assuming no discounts) and can be ignored for optimization. The $TRC$ is:</p>
+            <p>The total annual purchase cost D x c is constant (assuming no discounts) and can be ignored for optimization. The TRC is:</p>
             <blockquote>
                 <p>$$TRC(Q) = \frac{DK}{Q} + \frac{Qh}{2}$$</p>
             </blockquote>
 
             <h4>Step 4: Find the Minimum (First Derivative)</h4>
-            <p>Set the first derivative with respect to $Q$ to zero.</p>
+            <p>Set the first derivative with respect to Q to zero.</p>
             <blockquote>
                 <p>$$\frac{d}{dQ}TRC(Q) = \frac{d}{dQ} \left( DK Q^{-1} + \frac{h}{2} Q \right) = - \frac{DK}{Q^2} + \frac{h}{2}$$</p>
                 <p>$$- \frac{DK}{Q^2} + \frac{h}{2} = 0 \quad \Rightarrow \quad Q^2 = \frac{2DK}{h}$$</p>
             </blockquote>
-            <p>This gives the optimal $Q$, which we call $Q^*_0$ (the classic EOQ):</p>
+            <p>This gives the optimal Q (the classic EOQ):</p>
             <div class="callout">
                 $$Q^*_0 = \sqrt{\frac{2DK}{h}}$$
             </div>
@@ -138,7 +138,7 @@
             <blockquote>
                 <p>$$\frac{d^2}{dQ^2}TRC(Q) = \frac{d}{dQ} \left( -DK Q^{-2} + \frac{h}{2} \right) = \frac{2DK}{Q^3}$$</p>
             </blockquote>
-            <p>Since $$D$$, $$K$$, and $$Q$$ are all positive, $$\frac{2DK}{Q^3} > 0$$. The cost function is convex, and $$Q^*$$ is the unique global minimum.</p>
+            <p>Since D, K, and Q are all positive, $$\frac{2DK}{Q^3} > 0$$. The cost function is convex, and optimal Q is the unique global minimum.</p>
         </section>
 
         <section>
@@ -149,18 +149,18 @@
             <div class="callout" style="background-color: #fff5f5; border-color: #fecaca;">
                 <h4 style="color: #991b1b; font-weight: bold;">Key Assumptions</h4>
                 <ul>
-                    <li><strong>Demand:</strong> Deterministic, constant, and continuous. (Violated by stochasticity $\rightarrow$ Safety Stock)</li>
-                    <li><strong>Replenishment:</strong> Instantaneous (Lead time = 0). (Violated $\rightarrow$ Reorder Points)</li>
-                    <li><strong>Costs:</strong> Known, fixed, and stationary. (Violated $\rightarrow$ Quantity Discounts)</li>
-                    <li><strong>Horizon:</strong> Infinite and stationary. (Violated by non-stationary demand $\rightarrow$ Lot Sizing)</li>
-                    <li><strong>Constraints:</strong> No backorders, no capacity limits. (Violated $\rightarrow$ Backorder Models)</li>
+                    <li><strong>Demand:</strong> Deterministic, constant, and continuous. (Violated by stochasticity -> Safety Stock)</li>
+                    <li><strong>Replenishment:</strong> Instantaneous (Lead time = 0). (Violated -> Reorder Points)</li>
+                    <li><strong>Costs:</strong> Known, fixed, and stationary. (Violated -> Quantity Discounts)</li>
+                    <li><strong>Horizon:</strong> Infinite and stationary. (Violated by non-stationary demand -> Lot Sizing)</li>
+                    <li><strong>Constraints:</strong> No backorders, no capacity limits. (Violated -> Backorder Models)</li>
                 </ul>
             </div>
 
             <h3>2.2 Mathematical Proof of Robustness</h3>
             <p>
-                The EOQ model's most powerful feature is its robustness to parameter errors. The total cost curve is "flat" around the optimum $$Q^*$$.
-                Let's define a cost penalty ratio $$\frac{TRC(Q')}{TRC(Q^*)}$$ where $Q'$ is a non-optimal quantity ($$Q' = \beta Q^*$$).
+                The EOQ model's most powerful feature is its robustness to parameter errors. The total cost curve is "flat" around the optimum $$Q^*$$
+                Let's define a cost penalty ratio $$\frac{TRC(Q')}{TRC(Q^*)}$$ where Q' is a non-optimal quantity $$Q' = \beta Q^*$$
             </p>
             <blockquote>
                 <p>$$TRC(Q') = \frac{DK}{Q'} + \frac{Q'h}{2} = \frac{DK}{\beta Q^*} + \frac{\beta Q^* h}{2}$$</p>
@@ -177,7 +177,7 @@
                 $$\frac{TRC(Q')}{TRC(Q^*)} = \frac{1}{2} \left( \frac{1}{\beta} + \beta \right)$$
             </div>
             <p>
-                <strong>Example:</strong> If your estimate for $$K$$ is 50% too high, your $$Q'$ will be $$\sqrt{1.5} \approx 1.22$ times $Q^*$ (so $\beta=1.22$). Your cost penalty is $\frac{1}{2}(\frac{1}{1.22} + 1.22) = 1.02$.
+                <strong>Example:</strong> If your estimate for K is 50% too high, your Q' will be $$\sqrt{1.5}$$ \approx 1.22 times Q* (so $$\beta=1.22$$). Your cost penalty is $$\frac{1}{2}(\frac{1}{1.22} + 1.22) = 1.02$$
                 A 50% parameter error leads to only a <strong>2% cost penalty</strong>.
             </p>
         </section>
@@ -187,28 +187,28 @@
             
             <h3>3.1 EOQ with Planned Shortages (Backorders)</h3>
             <p>
-                We relax the "no stockouts" assumption, incurring a backorder cost $b$ per unit per year. Let $S$ be the maximum inventory level and $Q$ the order quantity, so $(Q-S)$ is the maximum backorder level.
+                We relax the "no stockouts" assumption, incurring a backorder cost b per unit per year. Let S be the maximum inventory level and Q the order quantity, so (Q-S) is the maximum backorder level.
             </p>
-            <h4>New Cost Function $TRC(Q, S)$</h4>
-            <p>Annual Holding Cost = $\frac{S^2 h}{2Q}$</p>
-            <p>Annual Shortage Cost = $\frac{(Q-S)^2 b}{2Q}$</p>
+            <h4>New Cost Function TRC(Q, S)</h4>
+            <p>Annual Holding Cost = $$\frac{S^2 h}{2Q}$$</p>
+            <p>Annual Shortage Cost = $$\frac{(Q-S)^2 b}{2Q}$$</p>
             <blockquote>
                  <p>$$TRC(Q, S) = \frac{DK}{Q} + \frac{S^2 h}{2Q} + \frac{(Q-S)^2 b}{2Q}$$</p>
             </blockquote>
 
             <h4>Optimal Solution (Partial Derivatives)</h4>
-            <p>Taking $\frac{\partial TRC}{\partial S} = 0$ gives the optimal $S^*$ in terms of $Q$:</p>
+            <p>Taking $$\frac{\partial TRC}{\partial S} = 0$$ gives the optimal S* in terms of Q:</p>
             <blockquote>
                 <p>$$S^* = Q \left( \frac{b}{h+b} \right)$$</p>
             </blockquote>
-            <p>Plugging this $S^*$ back in and taking $\frac{dTRC}{dQ} = 0$ yields the optimal $Q^*_b$:</p>
+            <p>Plugging this S* back in and taking $$\frac{dTRC}{dQ} = 0$$ yields the optimal Q*b:</p>
             <div class="callout">
                 $$Q^*_b = \sqrt{\frac{2DK}{h}} \sqrt{\frac{h+b}{b}}$$
             </div>
 
             <h3>3.2 EOQ with All-Units Quantity Discounts</h3>
             <p>
-                Here, the unit cost $c_j$ decreases at price break $q_j$. This is complex because $h = i \times c_j$ and the total purchase cost $D c_j$ must be included.
+                Here, the unit cost cj decreases at price break qj. This is complex because $$h = i \times c_j$$ and the total purchase cost $$D c_j$$ must be included.
             </p>
             <blockquote>
                 <p>$$TAC_j(Q) = \frac{DK}{Q} + \frac{Q(i c_j)}{2} + D c_j$$</p>
@@ -217,11 +217,11 @@
                 This creates a set of discontinuous cost curves. The optimal solution is found via the following algorithm:
             </p>
             <ol>
-                <li>Start with the <strong>lowest price $c_m$</strong>. Calculate its $Q^*_m = \sqrt{2DK / (i c_m)}$.</li>
-                <li><strong>If $Q^*_m$ is feasible</strong> (i.e., $Q^*_m \ge q_m$): This $Q^*_m$ is a candidate. Calculate $TAC_m(Q^*_m)$.</li>
-                <li><strong>If $Q^*_m$ is not feasible</strong> (i.e., $Q^*_m < q_m$): The best cost for this price level is at $q_m$. $q_m$ is a candidate. Calculate $TAC_m(q_m)$.</li>
-                <li>Repeat for all other price levels $j < m$.
-                <li>The optimal order quantity is the <strong>candidate $Q$ (either a $Q^*_j$ or a $q_j$) with the minimum Total Annual Cost ($TAC$)</strong>.</li>
+                <li>Start with the <strong>lowest price cm</strong>. Calculate its $$Q^*_m = \sqrt{2DK / (i c_m)}$$.</li>
+                <li><strong>If Q*m is feasible</strong> (i.e., $$Q^*_m \ge q_m$$): This Q*m is a candidate. Calculate $$TAC_m(Q^*_m)$$.</li>
+                <li><strong>If Q*m is not feasible</strong> (i.e., $$Q^*_m < q_m$$): The best cost for this price level is at qm. qm is a candidate. Calculate $$TAC_m(q_m)$$.</li>
+                <li>Repeat for all other price levels j < m.
+                <li>The optimal order quantity is the <strong>candidate Q (either a Q*j or a qj) with the minimum Total Annual Cost (TAC)</strong>.</li>
             </ol>
         </section>
 
