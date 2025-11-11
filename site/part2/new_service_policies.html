@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service-Driven Policies</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template for Part 2.
+    -->
+    <header>
+        <h1>Service-Driven Policies</h1>
+        <p>Optimizing (Q, R) and (P, S) policies subject to explicit service constraints (CSL and Fill Rate) rather than imputed costs.</p>
+        <nav>
+            <a href="overview.html">Part 2 Overview</a>
+            <a href="new_stochastic_control.html">Stochastic Control</a>
+            <a href="new_multi_echelon.html">Multi-Echelon</a>
+            <a href="new_data_driven.html">Data-Driven &amp; Robust</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 2</a> &rsaquo; 
+            Service Policies
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is massively expanded to differentiate between
+          cost-based and service-based optimization.
+        -->
+        <section>
+            <h2>Theory Essentials: Two Optimization Paradigms</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.5 Hours</span>
+                <span>References: Hadley & Whitin (1963); Zipkin (2000); Axsäter (2015)</span>
+            </div>
+            <p>
+                In Part 1, we derived the cost-optimal $(Q, R)$ policy by assuming a fixed shortage cost, $p$, per unit short. This led to the Newsvendor-like condition for $R$: $F(R) = \frac{p}{p+h}$.
+            </p>
+            <p>
+                In practice, $p$ is notoriously difficult to estimate. What is the true cost of a stockout? Lost goodwill? A lost customer? Managers are far more comfortable setting a *service target*.
+            </p>
+            <p>
+                This module reformulates the problem: instead of minimizing cost, we **minimize cost *subject to* a service constraint**.
+            </p>
+            <ul>
+                <li><strong>Paradigm 1 (Cost-Based):</strong> $\min_{Q,R} \text{TC}(Q,R,p)$. Solved by finding the optimal $p$.</li>
+                <li><strong>Paradigm 2 (Service-Based):</strong> $\min_{Q,R} \text{TC}(Q,R)$ s.t. $\text{Service}(Q,R) \ge \text{Target}$.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>2. The Cycle Service Level (CSL, $\alpha$) Constraint</h2>
+            <p>
+                This is the simpler of the two service constraints. We want to minimize costs subject to $CSL = \alpha$, where $CSL = P(DDLT \le R)$.
+            </p>
+            <blockquote>
+                $$\min_{Q,R} \left\{ \frac{KD}{Q} + h\left(\frac{Q}{2} + R - \mu_L\right) \right\}$$
+                $$\text{Subject to: } P(DDLT \le R) = F(R) = \alpha$$
+            </blockquote>
+            <p>
+                This problem is **decomposable**. The constraint $F(R) = \alpha$ does not depend on $Q$. It *only* sets the reorder point, $R$.
+            </p>
+            <ol>
+                <li><strong>Find R:</strong> The constraint $F(R) = \alpha$ directly gives $R^* = F^{-1}(\alpha)$.
+                    For $DDLT \sim N(\mu_L, \sigma_L)$, this is $R^* = \mu_L + z_\alpha \sigma_L$.
+                </li>
+                <li><strong>Find Q:</strong> With $R^*$ now a fixed constant, we just need to minimize the cost function $TC(Q) = \frac{KD}{Q} + \frac{hQ}{2} + h(R^* - \mu_L)$. The derivative $\frac{dTC}{dQ}$ is identical to the basic EOQ model.
+                    $$Q^* = \sqrt{\frac{2KD}{h}} = EOQ$$
+                </li>
+            </ol>
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">The $\alpha$-Constrained Policy</h4>
+                <p>
+                    The optimal policy subject to a Cycle Service Level $\alpha$ is to set $Q$ and $R$ independently:
+                </p>
+                $$Q^* = EOQ = \sqrt{\frac{2KD}{h}}$$
+                $$R^* = \mu_L + z_\alpha \sigma_L$$
+            </div>
+        </section>
+
+        <section>
+            <h2>3. The Fill Rate (FR, $\beta$) Constraint</h2>
+            <p>
+                This is a far more complex and realistic problem. The Fill Rate (Type 2 service) is the fraction of demand met directly from stock. It is a function of *both* $Q$ and $R$.
+            </p>
+            <p>
+                Recall from Part 1:
+                $FR = 1 - \frac{\text{Expected shortage per year}}{\text{Total annual demand}}$.
+            </p>
+            <ul>
+                <li>Expected shortage per cycle = $E[US(R)] = \int_R^\infty (x-R) f(x) dx$</li>
+                <li>Number of cycles per year = $D/Q$</li>
+                <li>Expected shortage per year = $E[US(R)] \cdot (D/Q)$</li>
+            </ul>
+            <blockquote>
+                $$FR(Q, R) = 1 - \frac{E[US(R)] \cdot (D/Q)}{D} = 1 - \frac{E[US(R)]}{Q}$$
+            </blockquote>
+            <p>
+                The optimization problem is now:
+            </p>
+            <blockquote>
+                $$\min_{Q,R} \left\{ \frac{KD}{Q} + h\left(\frac{Q}{2} + R - \mu_L\right) \right\}$$
+                $$\text{Subject to: } 1 - \frac{E[US(R)]}{Q} \ge \beta$$
+            </blockquote>
+            <p>
+                The constraint $Q(1-\beta) = E[US(R)]$ clearly shows that $Q$ and $R$ are now **interdependent**. We cannot solve for them separately.
+            </p>
+
+            <h3>3.1 The Iterative Solution (Hadley-Whitin)</h3>
+            <p>
+                This problem must be solved numerically. The standard approach is an iterative algorithm that finds the $(Q, R)$ pair satisfying two optimality conditions.
+            </p>
+            <ol>
+                <li>
+                    <strong>Condition 1 (EOQ-like):</strong> The optimal $Q$ balances setup cost against holding and *shortage* costs. The optimal $Q$ can be shown to be:
+                    $$Q = \sqrt{\frac{2D(K + \text{Imputed Shortage Cost})}{h}}$$
+                </li>
+                <li>
+                    <strong>Condition 2 (Newsvendor-like):</strong> The optimal $R$ balances holding and shortage costs *at the margin*.
+                </li>
+            </ol>
+            <p>
+                The full iterative algorithm (Axsäter, 2015) finds the $(Q,R)$ pair that satisfies the fill rate constraint and the EOQ trade-off simultaneously. A common, simpler heuristic is to:
+            </p>
+            <ol>
+                <li>Set $Q_0 = EOQ = \sqrt{2KD/h}$.</li>
+                <li>Find $R_0$ by solving the constraint: $E[US(R_0)] = Q_0(1-\beta)$.
+                    (For $DDLT \sim N(\mu_L, \sigma_L)$, this means solving $G_u(z_0) = \frac{Q_0(1-\beta)}{\sigma_L}$ for $z_0$.)
+                </li>
+                <li>(Optional refinement) Use this $R_0$ to calculate an imputed shortage cost $p$, then recalculate $Q_1$, then $R_1$, and so on, until $(Q_k, R_k)$ converges.</li>
+            </ol>
+            <p>
+                For most practical purposes, the heuristic $(Q_0, R_0)$ is extremely close to optimal.
+            </p>
+        </section>
+
+        <section>
+            <h2>Workshop: CSL vs. FR Policy</h2>
+            <div class="callout">
+                <strong>Scenario:</strong> $D=2000$ units/yr, $K=\$100$, $h=\$5$/unit/yr.
+                <br>Lead time demand $DDLT \sim N(\mu_L=40, \sigma_L=10)$.
+            </div>
+            <ol class="resource-list">
+                <li><strong>Policy A (CSL):</strong> Calculate the $(Q, R)$ policy for a target CSL $\alpha = 95\%$. (Hint: $z_{.95} = 1.645$).</li>
+                <li><strong>Policy B (Fill Rate):</strong> Calculate the *heuristic* $(Q, R)$ policy for a target Fill Rate $\beta = 99\%$. (Hint: $G_u(z=1.28) \approx 0.04$).
+                    <ol>
+                        <li>Calculate $Q_0 = EOQ$.</li>
+                        <li>Solve for $z_0$ using $G_u(z_0) = Q_0(1-\beta)/\sigma_L$.</li>
+                        <li>Find $R_0 = \mu_L + z_0 \sigma_L$.</li>
+                    </ol>
+                </li>
+                <li>Compare the $R$ (and thus safety stock) of both policies. Discuss why the Fill Rate policy might be preferred.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Read Zipkin (2000), Chapter 4. How does the "imputed shortage cost" $p$ relate to the Lagrange multiplier $\lambda$ of the service constraint in the formal optimization?
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, calculation-based quiz on the $\alpha$-constrained policy.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-sp">
+                <div class="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <p><strong>Question 1.</strong> What is the *primary* difference between a CSL ($\alpha$) constraint and a Fill Rate ($\beta$) constraint?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">CSL is for periodic review, Fill Rate is for continuous.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">CSL is harder to calculate than Fill Rate.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">CSL (a probability) is independent of $Q$, while Fill Rate (a volume) depends on *both* $Q$ and $R$.</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> When finding the optimal $(Q, R)$ policy for a CSL $\alpha$ constraint, we can solve for $Q$ and $R$ separately. The optimal $Q^*$ is:</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">$Q^* = EOQ = \sqrt{2KD/h}$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">$Q^* = 0$, because service is the only goal.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">$Q^*$ is a complex value that depends on $\alpha$.</label>
+                    </div>
+                    
+                    <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                        <strong>Data for Question 3:</strong>
+                        <ul>
+                            <li>Annual Demand ($D$): $1000$</li>
+                            <li>Order Cost ($K$): $50$</li>
+                            <li>Holding Cost ($h$): $2$/unit/yr</li>
+                            <li>$DDLT \sim N(\mu_L=20, \sigma_L=5)$</li>
+                            <li>Target CSL ($\alpha$): $95\%$ (Use $z_{.95} = 1.645$)</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Question 3.</strong> What is the optimal $(Q^*, R^*)$ policy for this $\alpha$-constrained system?</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">$Q^* \approx 224, R^* \approx 28$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">$Q^* \approx 224, R^* = 20$</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">$Q^* = 100, R^* = 30$</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-sp-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Hadley, G., & Whitin, T. M. (1963). <em>Analysis of Inventory Systems</em>. Prentice-Hall. (The classic, foundational text).</li>
+                <li>Axsäter, S. (2015). <em>Inventory control</em>. (Vol. 220). Springer. (Provides modern, concise derivations).</li>
+                <li>Zipkin, P. H. (2000). <em>Foundations of Inventory Management</em>. McGraw-Hill. (Excellent chapter on service-constrained systems).</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Reflect on why a manager might prefer a 99% Fill Rate over a 95% CSL, even if the latter is "cheaper".
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-sp').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'c',
+                q2: 'a',
+                q3: 'a'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> This is the key insight. CSL is $P(DDLT \le R)$, which is independent of $Q$. Fill Rate is $1 - E[US(R)]/Q$, which is critically dependent on both $Q$ and $R$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> CSL is a *probability* (fraction of cycles with no stockout), while Fill Rate is a *volume* (fraction of demand met). FR is a function of both Q and R.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> Because the CSL constraint $F(R)=\alpha$ *only* sets $R$, the cost function $TC(Q)$ is minimized independently. This minimization is identical to the classic EOQ.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> The problem is decomposable. The constraint sets $R$ (as a constant), and the cost minimization for $Q$ is just the standard EOQ.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> <br/> $Q^* = EOQ = \\sqrt{2KD/h} = \\sqrt{2 \cdot 1000 \cdot 50 / 2} = \\sqrt{50000} \approx 224$. <br/> $R^* = \\mu_L + z_\alpha \sigma_L = 20 + (1.645 \cdot 5) = 20 + 8.225 \approx 28$.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> You must solve for both parts independently. First, $Q^* = EOQ$. Second, $R^* = \\mu_L + z \sigma_L$.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-sp-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
