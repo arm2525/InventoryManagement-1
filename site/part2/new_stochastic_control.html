@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stochastic Control & (s, S) Policies</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template.
+      This is now Part 2, so the nav links are updated.
+    -->
+    <header>
+        <h1>Stochastic Control & (s, S) Policies</h1>
+        <p>Moving from static models to dynamic, stochastic control using Markov Decision Processes and the optimality of (s, S) policies.</p>
+        <nav>
+            <a href="overview.html">Part 2 Overview</a>
+            <a href="multi_echelon.html">Multi-Echelon</a>
+            <a href="coordination.html">Coordination</a>
+            <a href="advanced_stochastic.html">Advanced Stochastic</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 2</a> &rsaquo; 
+            Stochastic Control
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is massively expanded to introduce Bellman equations
+          and K-convexity, the core of Ph.D.-level stochastic control.
+        -->
+        <section>
+            <h2>Theory Essentials: The Stochastic Dynamic Lot Sizing Problem</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.5 Hours</span>
+                <span>References: Scarf (1960); Porteus (2002); Zipkin (2000)</span>
+            </div>
+            <p>
+                In Part 1, we analyzed two distinct worlds:
+            </p>
+            <ol>
+                <li><strong>Dynamic, Deterministic:</strong> The Dynamic Lot Sizing (DLS) problem, solved optimally by Wagner-Whitin.</li>
+                <li><strong>Static, Stochastic:</strong> The Newsvendor problem, solved optimally by the Critical Ratio.</li>
+            </ol>
+            <p>
+                We now combine these challenges: How do we make optimal ordering decisions over a multi-period horizon when demand is **dynamic (stochastic) and not known in advance**?
+            </p>
+            <p>
+                This is the classic stochastic inventory control problem. It is a **Markov Decision Process (MDP)** and is solved using dynamic programming.
+            </p>
+
+            <h3>1.1 The Model (The Bellman Formulation)</h3>
+            <p>Let's define the problem over $N$ periods, working backwards (the DP approach).</p>
+            <ul>
+                <li>$x$ = Inventory level *before* ordering (the "state").</li>
+                <li>$y$ = Inventory level *after* ordering (the "action" is to order $Q = y-x$).</li>
+                <li>$D$ = Stochastic demand in a period, with PDF $\phi(d)$.</li>
+                <li>$K$ = Fixed ordering cost (if $y > x$).</li>
+                <li>$c$ = Per-unit purchase cost.</li>
+                <li>$L(y)$ = The expected one-period holding/penalty cost, given we start the period with $y$ inventory. This is a Newsvendor cost function!
+                    $$ L(y) = \int_0^y h(y-d)\phi(d)dd + \int_y^\infty p(d-y)\phi(d)dd $$
+                    (Where $h$ is holding cost and $p$ is shortage penalty cost.)
+                </li>
+                <li>$\alpha$ = Discount factor ($0 < \alpha \le 1$).</li>
+            </ul>
+            
+            <p>Let $f_n(x)$ = The minimum expected discounted cost for the remaining $n$ periods, given we start with inventory $x$.</p>
+            <p>The **Bellman Optimality Equation** defines this relationship:</p>
+            <blockquote>
+                $$ f_n(x) = \min_{y \ge x} \{ K \cdot \delta(y-x) + c(y-x) + L(y) + \alpha \mathbb{E}[f_{n-1}(y-D)] \} $$
+                Where $\delta(y-x) = 1$ if $y > x$, and $0$ otherwise.
+            </blockquote>
+            <p>
+                This equation is notoriously difficult to solve. We cannot find a simple closed-form solution. The breakthrough came not from solving for $f_n(x)$, but from proving the *structure* of the optimal policy.
+            </p>
+        </section>
+
+        <section>
+            <h2>2. The Optimality of (s, S) Policies</h2>
+            <p>
+                In his seminal 1960 paper, Herbert Scarf proved that for this problem, the optimal policy has a specific structure: the **(s, S) policy**.
+            </p>
+            <ul>
+                <li>**If inventory $x < s$:** Order $S-x$ to bring inventory up to $S$.</li>
+                <li>**If inventory $x \ge s$:** Do not order.</li>
+            </ul>
+            <p>
+                This policy is defined by two numbers, $s$ (the reorder point) and $S$ (the order-up-to level). This is incredibly powerful—it reduces an infinitely complex problem to finding just two parameters.
+            </p>
+
+            <h3>2.1 K-Convexity: The Key to the Proof</h3>
+            <p>
+                Scarf's proof is a landmark of operations research. He did not solve the Bellman equation, but rather proved that a key property, **K-convexity**, is preserved from one period to the next.
+            </p>
+            <div class="callout" style="background-color: #f0f9ff; border-color: #bae6fd;">
+                <h4 style="color: #0284c7; font-weight: bold;">Definition: K-Convexity</h4>
+                <p>
+                    A function $g(x)$ is **K-convex** if $g(x)$ is not necessarily convex, but the "action" function $G(y) = \min_{y \ge x} \{ K\delta(y-x) + g(y) \}$ is convex.
+                </p>
+                <p>
+                    In simpler terms: a function is K-convex if its shape is such that the optimal decision, when faced with a fixed cost $K$, is to "jump" from a lower point ($s$) to a single higher point ($S$).
+                </p>
+            </div>
+            <p>
+                **Scarf's Proof (Conceptual):**
+            </p>
+            <ol>
+                <li><strong>Base Case:</strong> The one-period cost function $c(y-x) + L(y)$ is K-convex (it's convex, which is a stronger condition).</li>
+                <li><strong>Inductive Step:</strong> Scarf proved that if the $n$-period cost function $f_n(x)$ is K-convex, then the $(n+1)$-period cost function $f_{n+1}(x)$ (which depends on $f_n$) *must also be K-convex*.</li>
+                <li><strong>Conclusion:</strong> Since the property holds for all $n$, the optimal policy in every period must be an (s, S) policy.</li>
+            </ol>
+            <p>
+                This proves that the simple, intuitive (s, S) policy is not just a heuristic—it is the *provably optimal* solution to the multi-period stochastic inventory problem with fixed order costs.
+            </p>
+        </section>
+        
+        <section>
+            <h2>Workshop: Formulating the MDP</h2>
+            <ol class="resource-list">
+                <li>For a simple 2-period problem, write out the *full* Bellman equation for $f_2(x)$.</li>
+                <li>Discuss: Why is the (Q, R) policy (from Part 1) *not* guaranteed to be optimal for this problem? (Hint: In (Q, R), $Q$ is fixed. In (s, S), the order quantity $S-x$ is variable.)</li>
+                <li>Read Scarf (1960). Prepare a 3-slide summary of the *assumptions* required for his proof.</li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Scarf's proof is for the infinite-horizon, discounted cost, or $N$-period finite horizon. How does this differ from the long-run *average cost* criteria? (Hint: See Porteus (2002) on "equivalent" criteria).
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, conceptual quiz on the advanced content.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-stochastic">
+                <div class="quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <p><strong>Question 1.</strong> What is the key mathematical framework used to solve the multi-period stochastic lot-sizing problem?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">Calculus and differentiation (like the EOQ model).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">Markov Decision Processes (MDPs) and Dynamic Programming.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">The Critical Ratio (like the Newsvendor model).</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> Scarf's (1960) seminal paper on this topic proved that:</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">The optimal (s, S) parameters can be found using the EOQ formula.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">The *structure* of the optimal policy is of the (s, S) form.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">Inventory is never optimal and a "just-in-time" (JIT) policy is best.</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> What is the key mathematical property that Scarf used in his proof to show that the (s, S) policy structure is preserved over time?</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">The Zero-Inventory Property (from Wagner-Whitin).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">K-Convexity.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">The Central Limit Theorem.</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-stochastic-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References</h2>
+            <ul class="resource-list">
+                <li>Scarf, H. (1960). The optimality of (S, s) policies in the dynamic inventory problem. In K. J. Arrow, S. Karlin, & P. Suppes (Eds.), <em>Mathematical Methods in the Social Sciences</em>. Stanford University Press.</li>
+                <li>Porteus, E. L. (2002). <em>Foundations of Stochastic Inventory Theory</em>. Stanford University Press.</li>
+                <li>Zipkin, P. H. (2000). <em>Foundations of Inventory Management</em>. McGraw-Hill.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Reflect on how the (s, S) policy is a generalization of both the EOQ (K > 0) and Newsvendor (K = 0, N=1) models.
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-stochastic').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'b'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> The problem involves optimal decisions over time (Dynamic Programming) under uncertainty (Stochastic), making it a classic Markov Decision Process (MDP).</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> Simple calculus (a) or static ratios (c) cannot handle the multi-period, sequential nature of the stochastic problem.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> Scarf\'s major contribution was not a simple formula, but the *proof* that the optimal policy *must* have the simple (s, S) structure.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> The paper proved the *structure* of the policy. Finding the *exact* (s, S) parameters is still a very difficult computational problem.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> K-Convexity is the specific mathematical property Scarf defined and proved is preserved by the Bellman equation, which in turn guarantees the (s, S) policy structure.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> The Zero-Inventory Property (a) applies to the deterministic DLS problem. The Central Limit Theorem (c) is a statistical tool, not the core of this DP proof.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-stochastic-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
