@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Present-Day Research Frontiers</title>
+    
+    <!-- Using the same stylesheet as the template file -->
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+
+    <!-- 
+      FIX: Added the MathJax configuration script as requested.
+      This tells MathJax to recognize $...$ and $$...$$
+    -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    };
+    </script>
+    <script id="Math-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- 
+      Header and Nav structure matches the template for Part 3.
+    -->
+    <header>
+        <h1>Present-Day Research Frontiers</h1>
+        <p>Analyzing the "hot topics" in inventory management that are actively being debated in top journals today.</p>
+        <nav>
+            <a href="overview.html">Part 3 Overview</a>
+            <a href="new_classics.html">Classical Foundations</a>
+            <a href="new_modern_evolution.html">Modern Evolution</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="breadcrumb">
+            <a href="../index.html">Home</a> &rsaquo; 
+            <a href="overview.html">Part 3</a> &rsaquo; 
+            Research Frontiers
+        </div>
+
+        <!-- 
+          CONTENT REVISION:
+          This section is a Ph.D.-level synthesis of current,
+          "hot" research streams.
+        -->
+        <section>
+            <h2>Theory Essentials: What is Being Researched *Today*?</h2>
+            <div class="lesson-meta">
+                <span>Duration: 1.5 Hours</span>
+                <span>References: See key references below</span>
+            </div>
+            <p>
+                The "Classical Trajectory" module showed how problems were solved. This module discusses the problems that are *unsolved* or *newly created*. Modern research is defined by four major forces: (1) Human irrationality, (2) Environmental impact, (3) New retail channels, and (4) Global disruptions.
+            </p>
+        </section>
+
+        <section>
+            <h2>Stream 1: Behavioral Operations Management (BOM)</h2>
+            <p>
+                The "Golden Age" (Era 2) and "Supply Chain Era" (Era 4) assumed that all decision-makers were *rational* (i.e., they would *use* the optimal ($s, S$) policy or the channel-optimizing contract). Behavioral Operations, famously pioneered by Schweitzer & Cachon, challenges this.
+            </p>
+            <ul>
+                <li><strong>Key Question:</strong> Why do real, educated managers *not* use the optimal models?</li>
+                <li><strong>Seminal Finding (The Newsvendor Effect):</strong> When faced with a Newsvendor problem, real humans do *not* order the optimal $Q^*$. They exhibit systematic biases.
+                    <ul>
+                        <li><strong>"Pull-to-Center":</strong> When $Q^*$ is high (high-profit items), managers order *too little*. When $Q^*$ is low (low-profit items), they order *too much*.</li>
+                        <li><strong>"Anchoring":</strong> Managers often anchor their decision on the *mean demand* $\mu$, failing to properly account for the $C_u$ and $C_o$ costs.</li>
+                    </ul>
+                </li>
+                <li><strong>Frontier:</strong> How do we design *debiasing* contracts or *decision-support systems* (e.g., AI) that correct for this predictable human bias?</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Stream 2: Sustainability & Closed-Loop Supply Chains</h2>
+            <p>
+                Era 1-4 models assumed a "forward" linear flow: Supplier &rarr; Firm &rarr; Customer. This stream introduces a "reverse" flow, driven by environmental and economic pressures.
+            </p>
+            <ul>
+                <li><strong>Key Question:</strong> How do we manage inventory in a system where products are *remanufactured* or *recycled*?</li>
+                <li><strong>New Models (Closed-Loop Supply Chains):</strong> These models are far more complex. A firm now has to manage multiple, interacting inventory stocks:
+                    <ol>
+                        <li>Inventory of *new* products.</li>
+                        <li>Inventory of *returned cores* (used products).</li>
+                        <li>Inventory of *remanufactured* products.</li>
+                    </ol>
+                </li>
+                <li><strong>Frontier:</strong> What is the optimal inventory policy when a *carbon cap* or *carbon tax* is introduced? This creates a multi-objective optimization problem: $\min \text{Cost}(Q)$ s.t. $\text{Carbon}(Q) \le \text{Cap}$.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Stream 3: Omnichannel & On-Demand Economy</h2>
+            <p>
+                The rise of e-commerce and the "gig economy" has shattered the classic multi-echelon structure.
+            </p>
+            <ul>
+                <li><strong>Key Question:</strong> What is the optimal inventory policy when a retail store is *also* a mini-warehouse for online orders (BOPIS: Buy-Online-Pickup-In-Store)?</li>
+                <li><strong>New Models (Store-as-Warehouse):</strong> This creates a conflict. An item in a store now has two competing sources of demand:
+                    <ol>
+                        <li>A physical customer (who gets angry if it's not on the shelf).</li>
+                        <li>An online customer (who expects it to be available for shipping).</li>
+                    </ol>
+                </li>
+                <li><strong>Frontier:</strong> How do you model inventory for the **On-Demand Economy** (e.g., Uber Eats, DoorDash)? The "inventory" (e.g., of food, or delivery drivers) is mobile, perishable, and must be positioned *proactively* based on ML forecasts.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Stream 4: Supply Chain Resilience & Disruption</h2>
+            <p>
+                This field, which was niche for 20 years, became the most important topic in operations post-2020. The classic models (EOQ, etc.) are $\min \text{Cost}$ models, which prioritize *efficiency*. Resilience models prioritize *robustness*.
+            </p>
+            <ul>
+                <li><strong>Key Question:</strong> How much "unproductive" inventory should we hold to protect against a low-probability, high-impact disruption (e.g., a factory fire, a port closure, a pandemic)?</li>
+                <li><strong>New Models (Dual-Sourcing, etc.):</strong> This research models the trade-off between a cheap, unreliable supplier and an expensive, reliable one. It often uses game theory or MDPs.</li>
+                <li><strong>Frontier:</strong> How do we move beyond "cost" as the only metric? Researchers are optimizing for *new* metrics, like **Time-to-Recover (TTR)** or the **Probability of Survival**. This is a central theme in modern Ph.D. research.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Workshop: Literature Stream Analysis</h2>
+            <ol class="resource-list">
+                <li><strong>Activity:</strong> In groups, select *one* of the four research streams above.</li>
+                <li>Using Google Scholar or Scopus, find 3-5 papers on that topic published in a top journal (e.g., *Management Science*, *Operations Research*, *M&SOM*) in the *last 5 years*.</li>
+                <li>
+                    Prepare a short presentation answering:
+                    <ol>
+                        <li>What is the specific research question (RQ) they address?</li>
+                        <li>What is their primary methodology (e.g., Analytical Model, Game Theory, Simulation, Empirical Data)?</li>
+                        <li>What is their key "contribution" or "finding"?</li>
+                    </ol>
+                </li>
+            </ol>
+            <div class="callout">
+                <strong>Research prompt:</strong> Based on your literature stream analysis, identify a "gap." What is the *next* logical research question that is still unanswered? This is the first step of your own research proposal.
+            </div>
+        </section>
+        
+        <!-- 
+          QUIZ REVISION:
+          This is a new, conceptual quiz on the modern research streams.
+        -->
+        <section>
+            <h2>Quiz</h2>
+            <form id="quiz-frontier">
+                <div class.quiz">
+                    <h4>Check your understanding</h4>
+                    
+                    <p><strong>Question 1.</strong> What is the "pull-to-center" bias from Behavioral Operations Management?</p>
+                    <div>
+                        <input type="radio" name="q1" id="q1a" value="a" />
+                        <label for="q1a">Managers order the optimal $Q^*$ from the Newsvendor model.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1b" value="b" />
+                        <label for="q1b">Managers systematically order *too much* for low-profit items and *too little* for high-profit items, anchoring on the mean demand.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q1" id="q1c" value="c" />
+                        <label for="q1c">Managers pull all inventory to a central warehouse (Risk Pooling).</label>
+                    </div>
+
+                    <p><strong>Question 2.</strong> A "Closed-Loop Supply Chain" inventory model fundamentally differs from classic models because it must...</p>
+                    <div>
+                        <input type="radio" name="q2" id="q2a" value="a" />
+                        <label for="q2a">...only use Poisson demand (like the METRIC model).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2b" value="b" />
+                        <label for="q2b">...manage the flow and inventory of *returned products (cores)* as well as new products.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q2" id="q2c" value="c" />
+                        <label for="q2c">...assume a $0$ ordering cost ($K=0$).</label>
+                    </div>
+
+                    <p><strong>Question 3.</strong> "Omnichannel" inventory research (e.g., BOPIS) is a complex new problem because...</p>
+                    <div>
+                        <input type="radio" name="q3" id="q3a" value="a" />
+                        <label for="q3a">...a single item of inventory (in the store) now has two competing sources of demand (in-store vs. online).</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3b" value="b" />
+                        <label for="q3b">...all online demand is now deterministic.</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="q3" id="q3c" value="c" />
+                        <label for="q3c">...it proves that the EOQ model is the only optimal policy.</label>
+                    </div>
+
+                    <button type="submit">Submit</button>
+                    <div id="quiz-frontier-result" class="quiz-result" style="display: none;"></div>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h2>Key References (Examples of Frontier Research)</h2>
+            <ul class="resource-list">
+                <li>Schweitzer, M. E., & Cachon, G. P. (2000). Decision bias in the newsvendor problem... <em>Management Science</em>. (Behavioral)</li>
+                <li>Atan, Z., & Van der Laan, E. A. (2016). Inventory control in hybrid systems with remanufacturing. <em>M&SOM</em>. (Closed-Loop)</li>
+                <li>Levi, R., Rudi, A., & Kallus, N. (2015). Data-driven inventory management. <em>Foundations and Trends...</em> (Data-Driven)</li>
+                <li>Agrawal, V., & Ulku, S. (2012). Omnichannel retail operations. In *Retail Supply Chain Management*. Springer. (Omnichannel)</li>
+                <li>Simchi-Levi, D., & Zhu, Y. (2018). The newsvendor model with a sourcing-time-dependent disruption risk. <em>Operations Research</em>. (Resilience)</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        Reflect on how these frontier topics are *combinations* of classic models (e.g., Omnichannel = Multi-Echelon + Newsvendor).
+    </footer>
+
+    <!-- 
+      Embedded Quiz JavaScript, matching the template style
+    -->
+    <script>
+        document.getElementById('quiz-frontier').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const correctAnswers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'a'
+            };
+
+            const userAnswers = {
+                q1: document.querySelector('input[name="q1"]:checked')?.value,
+                q2: document.querySelector('input[name="q2"]:checked')?.value,
+                q3: document.querySelector('input[name="q3"]:checked')?.value
+            };
+
+            let score = 0;
+            let feedbackHtml = '<ul>';
+
+            // Question 1 Feedback
+            if (userAnswers.q1 === correctAnswers.q1) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 1: Correct.</strong> This is the seminal finding. Humans anchor on the mean and don\'t adjust enough for the $C_u/C_o$ tradeoff, leading to this systematic bias.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 1: Incorrect.</strong> The core of Behavioral OM is (b): identifying the *systematic biases* (like pull-to-center) that cause human decisions to deviate from the optimal model.</li>';
+            }
+
+            // Question 2 Feedback
+            if (userAnswers.q2 === correctAnswers.q2) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 2: Correct.</strong> The key complexity of a closed-loop or remanufacturing system is the reverse-logistics flow and the need to manage the inventory of *returned cores*.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 2: Incorrect.</strong> (b) is the correct answer. The problem is complicated by the introduction of a new inventory class: returned products.</li>';
+            }
+
+            // Question 3 Feedback
+            if (userAnswers.q3 === correctAnswers.q3) {
+                score++;
+                feedbackHtml += '<li style="color: green;"><strong>Question 3: Correct.</strong> This is the central conflict in omnichannel inventory. The inventory is *shared*, and policies must be designed to decide which demand source (the in-store walker or the online clicker) has priority.</li>';
+            } else {
+                feedbackHtml += '<li style="color: red;"><strong>Question 3: Incorrect.</strong> (a) is the core problem. A single pool of inventory (the store) is now serving two very different demand streams, creating a complex allocation and stock-out problem.</li>';
+            }
+
+            feedbackHtml += '</ul>';
+
+            const resultDiv = document.getElementById('quiz-frontier-result');
+            
+            if (score === 3) {
+                resultDiv.innerHTML = '<h4 style="font-weight: bold;">Score: 3/3 - Excellent!</h4>' + feedbackHtml;
+                resultDiv.style.border = "1px solid green";
+                resultDiv.style.backgroundColor = "#f0fff4";
+            } else {
+                resultDiv.innerHTML = `<h4 style="font-weight: bold;">Score: ${score}/3 - Review the feedback below:</h4>` + feedbackHtml;
+                resultDiv.style.border = "1px solid red";
+                resultDiv.style.backgroundColor = "#fff5f5";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.padding = '1em';
+            resultDiv.style.marginTop = '1em';
+
+            // Re-run MathJax to typeset the feedback
+            if (typeof MathJax !== 'undefined' && MathJax.typeset) {
+                MathJax.typesetPromise([resultDiv]).catch(function (err) {
+                    console.log('MathJax typeset error: ' + err.message);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
